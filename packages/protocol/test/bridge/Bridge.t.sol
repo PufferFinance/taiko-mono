@@ -37,7 +37,7 @@ contract BridgeTest is TaikoTest {
     GoodReceiver goodReceiver;
     Bridge bridge;
     Bridge destChainBridge;
-    SignalService signalService;
+    SignalServiceL1 signalService;
     SkipProofCheckSignal mockProofSignalService;
     UntrustedSendMessageRelayer untrustedSenderContract;
 
@@ -91,16 +91,16 @@ contract BridgeTest is TaikoTest {
             deployProxy({
                 name: "signal_service",
                 impl: address(new SkipProofCheckSignal()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager))),
+                data: abi.encodeCall(SignalServiceL1.init, (address(0), address(addressManager))),
                 registerTo: address(addressManager)
             })
         );
 
-        signalService = SignalService(
+        signalService = SignalServiceL1(
             deployProxy({
                 name: "signal_service",
-                impl: address(new SignalService()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager)))
+                impl: address(new SignalServiceL1()),
+                data: abi.encodeCall(SignalServiceL1.init, (address(0), address(addressManager)))
             })
         );
 

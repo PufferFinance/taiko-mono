@@ -14,7 +14,7 @@ contract TestDelegateOwner is TaikoTest {
     address public owner;
     address public remoteOwner;
     Bridge public bridge;
-    SignalService public signalService;
+    SignalServiceL1 public signalService;
     AddressManager public addressManager;
     DelegateOwner public delegateOwner;
     Multicall3 public multicall;
@@ -56,7 +56,7 @@ contract TestDelegateOwner is TaikoTest {
             deployProxy({
                 name: "signal_service",
                 impl: address(new SkipProofCheckSignal()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager))),
+                data: abi.encodeCall(SignalServiceL2.init, (address(0), address(addressManager))),
                 registerTo: address(addressManager)
             })
         );

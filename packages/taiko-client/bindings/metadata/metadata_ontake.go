@@ -162,3 +162,7 @@ func (m *TaikoDataBlockMetadataOntake) IsOntakeBlock() bool {
 func (m *TaikoDataBlockMetadataOntake) InnerMetadata() *bindings.TaikoDataBlockMetadataV2 {
 	return &m.TaikoDataBlockMetadataV2
 }
+
+func (m *TaikoDataBlockMetadataOntake) GetDepositsRoot() common.Hash {
+	return m.DepositsHash
+}

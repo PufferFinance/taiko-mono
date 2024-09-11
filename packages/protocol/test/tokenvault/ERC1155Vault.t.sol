@@ -99,7 +99,7 @@ contract ERC1155VaultTest is TaikoTest {
     ERC1155Vault erc1155Vault;
     ERC1155Vault destChainErc1155Vault;
     TestTokenERC1155 ctoken1155;
-    SignalService signalService;
+    SignalServiceL1 signalService;
     uint64 destChainId = 19_389;
 
     function setUp() public {
@@ -137,11 +137,11 @@ contract ERC1155VaultTest is TaikoTest {
             )
         );
 
-        signalService = SignalService(
+        signalService = SignalServiceL1(
             deployProxy({
                 name: "signal_service",
-                impl: address(new SignalService()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager)))
+                impl: address(new SignalServiceL1()),
+                data: abi.encodeCall(SignalServiceL1.init, (address(0), address(addressManager)))
             })
         );
 
@@ -168,7 +168,7 @@ contract ERC1155VaultTest is TaikoTest {
             deployProxy({
                 name: "signal_service",
                 impl: address(new SkipProofCheckSignal()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager)))
+                data: abi.encodeCall(SignalServiceL1.init, (address(0), address(addressManager)))
             })
         );
 

@@ -76,6 +76,10 @@ export async function deployTaikoL2(
             ? "AddressManager"
             : storageLayoutName;
 
+        if (storageLayoutName === "SignalService") {
+            storageLayoutName = "SignalServiceL2";
+        }
+
         storageLayouts[contractName] =
             await getStorageLayout(storageLayoutName);
         // initialize contract variables, we only care about the variables
@@ -132,7 +136,10 @@ async function generateContractConfigs(
             path.join(ARTIFACTS_PATH, "./ERC1155Vault.sol/ERC1155Vault.json"),
         ),
         SignalServiceImpl: require(
-            path.join(ARTIFACTS_PATH, "./SignalService.sol/SignalService.json"),
+            path.join(
+                ARTIFACTS_PATH,
+                "./SignalServiceL2.sol/SignalServiceL2.json",
+            ),
         ),
         SharedAddressManagerImpl: require(
             path.join(

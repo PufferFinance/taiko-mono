@@ -6,7 +6,7 @@ import "../TaikoTest.sol";
 abstract contract TaikoL1TestBase is TaikoTest {
     AddressManager public addressManager;
     TaikoToken public tko;
-    SignalService public ss;
+    SignalServiceL1 public ss;
     TaikoL1 public L1;
     TaikoData.Config conf;
     uint256 internal logCount;
@@ -44,11 +44,11 @@ abstract contract TaikoL1TestBase is TaikoTest {
             })
         );
 
-        ss = SignalService(
+        ss = SignalServiceL1(
             deployProxy({
                 name: "signal_service",
-                impl: address(new SignalService()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager)))
+                impl: address(new SignalServiceL1()),
+                data: abi.encodeCall(SignalServiceL1.init, (address(0), address(addressManager)))
             })
         );
         ss.authorize(address(L1), true);

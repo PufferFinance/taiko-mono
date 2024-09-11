@@ -358,6 +358,7 @@ func (s *Syncer) insertNewHead(
 			new(big.Int).Add(parent.Number, common.Big1),
 			baseFee,
 			parent.GasUsed,
+			meta.GetDepositsRoot(),
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create TaikoL2.anchor transaction: %w", err)
@@ -376,6 +377,7 @@ func (s *Syncer) insertNewHead(
 			meta.GetBaseFeeConfig(),
 			new(big.Int).Add(parent.Number, common.Big1),
 			baseFee,
+			meta.GetDepositsRoot(),
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create TaikoL2.anchorV2 transaction: %w", err)

@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 import "../contracts/bridge/Bridge.sol";
-import "../contracts/signal/SignalService.sol";
+import "../contracts/L1/SignalServiceL1.sol";
 
 contract BadReceiver {
     receive() external payable {
@@ -36,7 +36,7 @@ contract NonNftContract {
     }
 }
 
-contract SkipProofCheckSignal is SignalService {
+contract SkipProofCheckSignal is SignalServiceL1 {
     function proveSignalReceived(
         uint64, /*srcChainId*/
         address, /*app*/

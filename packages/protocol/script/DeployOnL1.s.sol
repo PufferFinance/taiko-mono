@@ -78,7 +78,7 @@ contract DeployOnL1 is DeployCapability {
             uint64(block.chainid), LibStrings.B_SIGNAL_SERVICE
         );
         addressNotNull(signalServiceAddr, "signalServiceAddr");
-        SignalService signalService = SignalService(signalServiceAddr);
+        SignalServiceL1 signalService = SignalServiceL1(signalServiceAddr);
 
         address taikoL1Addr = AddressManager(rollupAddressManager).getAddress(
             uint64(block.chainid), LibStrings.B_TAIKO
@@ -87,7 +87,7 @@ contract DeployOnL1 is DeployCapability {
         TaikoL1 taikoL1 = TaikoL1(payable(taikoL1Addr));
 
         if (vm.envAddress("SHARED_ADDRESS_MANAGER") == address(0)) {
-            SignalService(signalServiceAddr).authorize(taikoL1Addr, true);
+            SignalServiceL1(signalServiceAddr).authorize(taikoL1Addr, true);
         }
 
         uint64 l2ChainId = taikoL1.getConfig().chainId;
@@ -160,12 +160,12 @@ contract DeployOnL1 is DeployCapability {
         deployProxy({
             name: "mainnet_signal_service",
             impl: address(new MainnetSignalService()),
-            data: abi.encodeCall(SignalService.init, (address(0), sharedAddressManager))
+            data: abi.encodeCall(SignalServiceL1.init, (address(0), sharedAddressManager))
         });
         deployProxy({
             name: "signal_service",
-            impl: address(new SignalService()),
-            data: abi.encodeCall(SignalService.init, (address(0), sharedAddressManager)),
+            impl: address(new SignalServiceL1()),
+            data: abi.encodeCall(SignalServiceL1.init, (address(0), sharedAddressManager)),
             registerTo: sharedAddressManager
         });
 

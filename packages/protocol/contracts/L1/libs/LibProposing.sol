@@ -21,6 +21,7 @@ library LibProposing {
         bytes32 parentMetaHash;
         bool postFork;
         bytes32 extraData;
+        bytes32 depositsRoot;
     }
 
     /// @notice Emitted when a block is proposed.
@@ -209,6 +210,10 @@ library LibProposing {
             revert L1_UNEXPECTED_PARENT();
         }
 
+        if (local.depositsRoot == bytes32(0)) {
+            local.depositsRoot = IBaseDepositContract(_resolver.resolve(LibStrings.B_SIGNAL_SERVICE, false)).getRoot();
+        }
+
         // Initialize metadata to compute a metaHash, which forms a part of
         // the block data to be stored on-chain for future integrity checks.
         // If we choose to persist all data fields in the metadata, it will
@@ -224,6 +229,7 @@ library LibProposing {
                 extraData: local.postFork
                     ? _encodeBaseFeeConfig(_config.baseFeeConfig)
                     : local.extraData,
+                depositsHash: local.depositsRoot,
                 coinbase: local.params.coinbase,
                 id: local.b.numBlocks,
                 gasLimit: _config.blockMaxGasLimit,

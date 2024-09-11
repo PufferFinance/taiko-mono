@@ -46,6 +46,7 @@ func (c *AnchorTxConstructor) AssembleAnchorTx(
 	l2Height *big.Int,
 	baseFee *big.Int,
 	parentGasUsed uint64,
+	depositsRoot common.Hash,
 ) (*types.Transaction, error) {
 	opts, err := c.transactOpts(ctx, l2Height, baseFee)
 	if err != nil {
@@ -65,9 +66,10 @@ func (c *AnchorTxConstructor) AssembleAnchorTx(
 		"stateRoot", l1Header.Root,
 		"baseFee", utils.WeiToGWei(baseFee),
 		"gasUsed", parentGasUsed,
+		"depositsRoot", depositsRoot,
 	)
 	// #nosec G115
-	return c.rpc.TaikoL2.Anchor(opts, l1Hash, l1Header.Root, l1Height.Uint64(), uint32(parentGasUsed))
+	return c.rpc.TaikoL2.Anchor(opts, l1Hash, l1Header.Root, depositsRoot, l1Height.Uint64(), uint32(parentGasUsed))
 }
 
 // AssembleAnchorV2Tx assembles a signed TaikoL2.anchorV2 transaction.
@@ -81,6 +83,7 @@ func (c *AnchorTxConstructor) AssembleAnchorV2Tx(
 	// Height of the L2 block which including the TaikoL2.anchorV2 transaction.
 	l2Height *big.Int,
 	baseFee *big.Int,
+	depositsRoot common.Hash,
 ) (*types.Transaction, error) {
 	opts, err := c.transactOpts(ctx, l2Height, baseFee)
 	if err != nil {
@@ -96,12 +99,14 @@ func (c *AnchorTxConstructor) AssembleAnchorV2Tx(
 		"gasIssuancePerSecond", baseFeeConfig.GasIssuancePerSecond,
 		"basefeeAdjustmentQuotient", baseFeeConfig.AdjustmentQuotient,
 		"baseFee", utils.WeiToGWei(baseFee),
+		"depositsRoot", depositsRoot,
 	)
 	// #nosec G115
 	return c.rpc.TaikoL2.AnchorV2(
 		opts,
 		anchorBlockID.Uint64(),
 		anchorStateRoot,
+		depositsRoot,
 		uint32(parentGasUsed),
 		*baseFeeConfig,
 	)

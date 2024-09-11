@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
+import "../common/BaseDepositContract.sol";
 import "../common/EssentialContract.sol";
 import "../common/LibStrings.sol";
 import "../libs/LibTrieProof.sol";
-import "./ISignalService.sol";
+import "../signal/ISignalService.sol";
 
-/// @title SignalService
+/// @title SignalServiceL2
 /// @notice See the documentation in {ISignalService} for more details.
 /// @dev Labeled in AddressResolver as "signal_service".
 /// @custom:security-contact security@taiko.xyz
-contract SignalService is EssentialContract, ISignalService {
+contract SignalServiceL2 is EssentialContract, BaseDepositContract, ISignalService {
     /// @notice Mapping to store the top blockId.
     /// @dev Slot 1.
     mapping(uint64 chainId => mapping(bytes32 kind => uint64 blockId)) public topBlockId;
@@ -34,6 +35,7 @@ contract SignalService is EssentialContract, ISignalService {
     error SS_EMPTY_PROOF();
     error SS_INVALID_HOPS_WITH_LOOP();
     error SS_INVALID_LAST_HOP_CHAINID();
+    error SS_INVALID_MERKLE_PROOF();
     error SS_INVALID_MID_HOP_CHAINID();
     error SS_INVALID_STATE();
     error SS_SIGNAL_NOT_FOUND();
@@ -75,6 +77,18 @@ contract SignalService is EssentialContract, ISignalService {
         return _syncChainData(_chainId, _kind, _blockId, _chainData);
     }
 
+    function syncDepositsRoot(
+        uint64 _chainId,
+        uint64 _blockId,
+        bytes32 _depositsRoot
+    )
+        external
+        returns (bytes32)
+    {
+        if (!isAuthorized[msg.sender]) revert SS_UNAUTHORIZED();
+        return _syncDepositsRoot(_chainId, _blockId, _depositsRoot);
+    }
+
     /// @inheritdoc ISignalService
     /// @dev This function may revert.
     function proveSignalReceived(
@@ -89,12 +103,15 @@ contract SignalService is EssentialContract, ISignalService {
         nonReentrant
         returns (uint256 numCacheOps_)
     {
-        CacheAction[] memory actions = // actions for caching
-         _verifySignalReceived(_chainId, _app, _signal, _proof, true);
+        // CacheAction[] memory actions = // actions for caching
+        //  _verifySignalReceived(_chainId, _app, _signal, _proof, true);
 
-        for (uint256 i; i < actions.length; ++i) {
-            numCacheOps_ += _cache(actions[i]);
-        }
+        // for (uint256 i; i < actions.length; ++i) {
+        //     numCacheOps_ += _cache(actions[i]);
+        // }
+        _verifyDepositReceived(_chainId, _app, _signal, _proof);
+
+        numCacheOps_ = 0;
     }
 
     /// @inheritdoc ISignalService
@@ -227,6 +244,20 @@ contract SignalService is EssentialContract, ISignalService {
         emit ChainDataSynced(_chainId, _blockId, _kind, _chainData, signal_);
     }
 
+    function _syncDepositsRoot(
+        uint64 _chainId,
+        uint64 _blockId,
+        bytes32 _depositsRoot
+    )
+        private
+        returns (bytes32 signal_)
+    {
+        signal_ = signalForChainData(_chainId, LibStrings.H_DEPOSIT_ROOT, _blockId);
+        _sendSignal(address(this), signal_, _depositsRoot);
+
+        emit ChainDepositsRootSynced(_chainId, _blockId, _depositsRoot);
+    }
+
     function _sendSignal(
         address _app,
         bytes32 _signal,
@@ -282,6 +313,34 @@ contract SignalService is EssentialContract, ISignalService {
         bytes32 slot = getSignalSlot(uint64(block.chainid), _app, _signal);
         assembly {
             value_ := sload(slot)
+        }
+    }
+
+    function _verifyDepositReceived(
+        uint64 _chainId,
+        address _app,
+        bytes32 _signal,
+        bytes calldata _proof
+    )
+        private
+        view
+        nonZeroAddr(_app)
+        nonZeroValue(uint256(_signal))
+    {
+        DepositProof memory proof = abi.decode(_proof, (DepositProof));
+
+        bytes32 depositsRootSignal = signalForChainData(
+            _chainId,
+            LibStrings.H_DEPOSIT_ROOT,
+            proof.blockId
+        );
+        bytes32 depositsRoot = _loadSignalValue(address(this), depositsRootSignal);
+        if (depositsRoot == bytes32(0)) {
+            revert SS_SIGNAL_NOT_FOUND();
+        }
+
+        if (!verifyMerkleProof(_signal, proof.smtProof, proof.index, depositsRoot)) {
+            revert SS_INVALID_MERKLE_PROOF();
         }
     }
 

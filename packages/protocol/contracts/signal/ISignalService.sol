@@ -43,6 +43,13 @@ interface ISignalService {
         bytes[] storageProof;
     }
 
+    struct DepositProof {
+        bytes32[32] smtProof;
+        uint32 index;
+        /// @notice The ID of a source chain block whose deposit root has been synched.
+        uint64 blockId;
+    }
+
     /// @notice Emitted when a remote chain's state root or signal root is
     /// synced locally as a signal.
     /// @param chainId The remote chainId.
@@ -56,6 +63,12 @@ interface ISignalService {
         bytes32 indexed kind,
         bytes32 data,
         bytes32 signal
+    );
+
+    event ChainDepositsRootSynced(
+        uint64 indexed chainId,
+        uint64 indexed blockId,
+        bytes32 depositsRoot
     );
 
     /// @notice Emitted when a signal is sent.
@@ -88,6 +101,14 @@ interface ISignalService {
         bytes32 _kind,
         uint64 _blockId,
         bytes32 _chainData
+    )
+        external
+        returns (bytes32 signal_);
+
+    function syncDepositsRoot(
+        uint64 _chainId,
+        uint64 _blockId,
+        bytes32 _depositsRoot
     )
         external
         returns (bytes32 signal_);

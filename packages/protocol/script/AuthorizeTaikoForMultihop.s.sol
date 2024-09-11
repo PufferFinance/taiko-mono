@@ -2,7 +2,7 @@
 pragma solidity 0.8.24;
 
 import "../test/DeployCapability.sol";
-import "../contracts/signal/SignalService.sol";
+import "../contracts/L1/SignalServiceL1.sol";
 
 contract AuthorizeTaikoForMultihop is DeployCapability {
     uint256 public privateKey = vm.envUint("PRIVATE_KEY");
@@ -15,7 +15,7 @@ contract AuthorizeTaikoForMultihop is DeployCapability {
 
         vm.startBroadcast(privateKey);
         for (uint256 i; i < taikoContracts.length; ++i) {
-            SignalService(sharedSignalService).authorize(taikoContracts[i], true);
+            SignalServiceL1(sharedSignalService).authorize(taikoContracts[i], true);
         }
 
         vm.stopBroadcast();

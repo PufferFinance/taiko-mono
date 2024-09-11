@@ -117,6 +117,7 @@ contract TaikoL2 is EssentialContract {
     function anchor(
         bytes32, /*_l1BlockHash*/
         bytes32 _l1StateRoot,
+        bytes32 _depositsRoot,
         uint64 _l1BlockId,
         uint32 _parentGasUsed
     )
@@ -149,6 +150,12 @@ contract TaikoL2 is EssentialContract {
             lastSyncedBlock = _l1BlockId;
         }
 
+        ISignalService(resolve(LibStrings.B_SIGNAL_SERVICE, false)).syncDepositsRoot(
+            l1ChainId,
+            _l1BlockId,
+            _depositsRoot
+        );
+
         // Update state variables
         bytes32 parentHash = blockhash(parentId);
         l2Hashes[parentId] = parentHash;
@@ -163,6 +170,7 @@ contract TaikoL2 is EssentialContract {
     function anchorV2(
         uint64 _anchorBlockId,
         bytes32 _anchorStateRoot,
+        bytes32 _anchorDepositsRoot,
         uint32 _parentGasUsed,
         TaikoData.BaseFeeConfig calldata _baseFeeConfig
     )
@@ -221,6 +229,12 @@ contract TaikoL2 is EssentialContract {
 
             lastSyncedBlock = _anchorBlockId;
         }
+
+        ISignalService(resolve(LibStrings.B_SIGNAL_SERVICE, false)).syncDepositsRoot(
+            l1ChainId,
+            _anchorBlockId,
+            _anchorDepositsRoot
+        );
 
         // Update state variables
         bytes32 parentHash = blockhash(parentId);

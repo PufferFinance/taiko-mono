@@ -11,7 +11,7 @@ contract BridgeTest2 is TaikoTest {
     address public remoteBridge;
 
     AddressManager public addressManager;
-    SignalService public signalService;
+    SignalServiceL1 public signalService;
     Bridge public bridge;
 
     modifier transactedBy(address addr) {
@@ -56,7 +56,7 @@ contract BridgeTest2 is TaikoTest {
             deployProxy({
                 name: "signal_service",
                 impl: address(new SkipProofCheckSignal()),
-                data: abi.encodeCall(SignalService.init, (address(0), address(addressManager))),
+                data: abi.encodeCall(SignalServiceL1.init, (address(0), address(addressManager))),
                 registerTo: address(addressManager)
             })
         );

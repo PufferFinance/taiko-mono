@@ -113,6 +113,7 @@ library TaikoData {
         bytes32 difficulty;
         bytes32 blobHash;
         bytes32 extraData;
+        bytes32 depositsHash;
         address coinbase;
         uint64 id;
         uint32 gasLimit;

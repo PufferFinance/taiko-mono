@@ -37,4 +37,5 @@ type TaikoBlockMetaData interface {
 	GetTxIndex() uint
 	GetTxHash() common.Hash
 	IsOntakeBlock() bool
+	GetDepositsRoot() common.Hash
 }

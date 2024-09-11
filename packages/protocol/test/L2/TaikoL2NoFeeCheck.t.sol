@@ -27,11 +27,11 @@ contract TestTaikoL2NoFeeCheck is TaikoTest {
             data: abi.encodeCall(AddressManager.init, (address(0)))
         });
 
-        SignalService ss = SignalService(
+        SignalServiceL2 ss = SignalServiceL2(
             deployProxy({
                 name: "signal_service",
-                impl: address(new SignalService()),
-                data: abi.encodeCall(SignalService.init, (address(0), addressManager)),
+                impl: address(new SignalServiceL2()),
+                data: abi.encodeCall(SignalServiceL2.init, (address(0), addressManager)),
                 registerTo: addressManager
             })
         );
@@ -196,6 +196,7 @@ contract TestTaikoL2NoFeeCheck is TaikoTest {
     function _anchorSimulation(uint32 parentGasLimit, uint64 l1Height) private {
         bytes32 l1Hash = randBytes32();
         bytes32 l1StateRoot = randBytes32();
-        L2.anchor(l1Hash, l1StateRoot, l1Height, parentGasLimit);
+        bytes32 l1DepositsRoot = randBytes32();
+        L2.anchor(l1Hash, l1StateRoot, l1DepositsRoot, l1Height, parentGasLimit);
     }
 }
