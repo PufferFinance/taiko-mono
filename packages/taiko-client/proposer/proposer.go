@@ -84,8 +84,11 @@ func (p *Proposer) InitFromConfig(
 		return fmt.Errorf("initialize rpc clients error: %w", err)
 	}
 
+	fmt.Println("Running proposer")
+	fmt.Println(p.rpc.L2.ChainID.Uint64())
 	// Protocol configs
 	p.protocolConfigs = encoding.GetProtocolConfig(p.rpc.L2.ChainID.Uint64())
+	fmt.Println(fmt.Sprintf("%d", p.rpc.L2.ChainID.Uint64()))
 
 	log.Info("Protocol configs", "configs", p.protocolConfigs)
 
