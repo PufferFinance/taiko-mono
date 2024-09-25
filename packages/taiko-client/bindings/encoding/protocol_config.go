@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	UniFiChainId = 728_376_428
+	UniFiChainId = 167_200
 )
 
 var (

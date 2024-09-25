@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/taikoxyz/taiko-mono/packages/taiko-client/preconfapi"
 	"os"
 
 	"github.com/urfave/cli/v2"
@@ -47,6 +48,13 @@ func main() {
 			Usage:       "Starts the prover software",
 			Description: "Taiko prover software",
 			Action:      utils.SubcommandAction(new(prover.Prover)),
+		},
+		{
+			Name:        "preconfapi",
+			Flags:       flags.PreconfAPIFlags,
+			Usage:       "Starts the preconfirmation API software",
+			Description: "Taiko preconfirmation API software",
+			Action:      utils.SubcommandAction(new(preconfapi.PreconfAPI)),
 		},
 	}
 
