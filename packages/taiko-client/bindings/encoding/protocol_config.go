@@ -77,7 +77,7 @@ var (
 		LivenessBond:          livenessBond,
 		StateRootSyncInternal: 16,
 		MaxAnchorHeightOffset: 64,
-		BaseFeeConfig: bindings.TaikoDataBaseFeeConfig{
+		BaseFeeConfig: bindings.LibSharedDataBaseFeeConfig{
 			AdjustmentQuotient:     8,
 			SharingPctg:            75,
 			GasIssuancePerSecond:   5_000_000,
