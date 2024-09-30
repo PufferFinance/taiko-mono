@@ -1,11 +1,8 @@
 name: "CI"
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "packages/taiko-client/**"
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "packages/taiko-client/**"
       - "go.mod"
@@ -13,8 +10,9 @@ on:
 
 jobs:
   lint:
+    if: github.event.pull_request.draft == false
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
 
@@ -24,13 +22,18 @@ jobs:
           go-version: 1.21
           cache: true
 
+      - name: Install golangci-lint
+        run: go install -v github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.0
+
       - name: Lint
         working-directory: packages/taiko-client
-        run: make lint
+        run: golangci-lint run --path-prefix=./ --config=.golangci.yml
 
   integration_tests:
+    if: github.event.pull_request.draft == false
     name: Integration tests
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
+    timeout-minutes: 15
 
     steps:
       - name: Cancel Previous Runs
