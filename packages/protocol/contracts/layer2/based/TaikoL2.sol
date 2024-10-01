@@ -231,7 +231,7 @@ contract TaikoL2 is EssentialContract, IBlockHash, TaikoL2Deprecated {
     /// @notice Returns the Ontake fork height.
     /// @return The Ontake fork height.
     function ontakeForkHeight() public pure virtual returns (uint64) {
-        return 0;
+        return 2;
     }
 
     /// @dev Synchronizes chain data with the given anchor block ID and state root.
