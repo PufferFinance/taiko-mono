@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/taikoxyz/taiko-mono/packages/taiko-client/preconfapi"
 	"os"
+
+	"github.com/taikoxyz/taiko-mono/packages/taiko-client/preconfapi"
 
 	"github.com/urfave/cli/v2"
 
