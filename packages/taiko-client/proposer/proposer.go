@@ -86,7 +86,6 @@ func (p *Proposer) InitFromConfig(
 
 	// Protocol configs
 	p.protocolConfigs = encoding.GetProtocolConfig(p.rpc.L2.ChainID.Uint64())
-	fmt.Println(fmt.Sprintf("%d", p.rpc.L2.ChainID.Uint64()))
 
 	log.Info("Protocol configs", "configs", p.protocolConfigs)
 
