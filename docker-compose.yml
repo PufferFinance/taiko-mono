@@ -27,3 +27,5 @@ services:
       - "${L2_AUTH}"
       - --verbosity
       - "4"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
