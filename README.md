@@ -15,10 +15,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/puffer_unifi?style=social)](https://twitter.com/puffer_unifi)
 [![Discord](https://img.shields.io/discord/984015101017346058?color=%235865F2&label=Discord&logo=discord&logoColor=%23fff)](https://discord.gg/pufferfi)
 
-[//]: # ([![YouTube]&#40;https://img.shields.io/youtube/channel/subscribers/UCxd_ARE9LtAEdnRQA6g1TaQ&#41;]&#40;https://www.youtube.com/@taikoxyz&#41;)
-
-[//]: # ([![GitPOAP Badge]&#40;https://public-api.gitpoap.io/v1/repo/taikoxyz/taiko-mono/badge&#41;]&#40;https://www.gitpoap.io/gh/pufferfinance/unifi-mono&#41;)
-[//]: # ([![License]&#40;https://img.shields.io/github/license/taikoxyz/taiko-mono&#41;]&#40;https://github.com/pufferfinance/unifi-mono/blob/unifi/LICENSE.md&#41;)
+[![License](https://img.shields.io/github/license/pufferfinance/unifi-mono)](https://github.com/pufferfinance/unifi-mono/blob/unifi/LICENSE.md)
 
 </div>
 
@@ -32,8 +29,8 @@ Get started with UniFi:
 
 ## Packages
 
-> [!TIP]
-> Make sure your node is using the latest version tags for taiko-client and taiko-geth. Check out the [node releases page](https://docs.taiko.xyz/network-reference/node-releases)!
+[//]: # (> [!TIP])
+[//]: # (> Make sure your node is using the latest version tags for unifi-client and unifi-geth.&#41;)
 
 | Package                                                                       | Description                                             | Release notes                                                                                                                                                                                                                                |
 |:------------------------------------------------------------------------------|:--------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
