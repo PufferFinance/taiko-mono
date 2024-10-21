@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./.github/unifi_logo_blue.png" width="200" alt="Logo for Puffer" />
+  <img src="./.github/unifi_logo_blue.png" width="250" alt="Logo for Puffer" />
 </p>
 
 <h1 align="center">
@@ -7,7 +7,7 @@
 </h1>
 
 <p align="center">
-  UniFi Based Rollup
+  A Based Rollup Solution
 </p>
 
 <div align="center">
