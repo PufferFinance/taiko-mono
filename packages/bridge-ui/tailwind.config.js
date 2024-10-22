@@ -216,16 +216,16 @@ export default {
           '--btn-text-case': 'capitalize',
           // '--rounded-box': '0.625rem', // 10px
 
-          '--primary-brand': '#C8047D', // pink-500
+          '--primary-brand': '#2A35BD', //Puffer secondary color
           '--primary-content': '#F3F3F3', // grey-10
           '--primary-link': '#FF6FC8', // pink-200
-          '--primary-link-hover': '#FFC6E9', // pink-50
+          '--primary-link-hover': '#2A35BD', //Puffer secondary color
           '--primary-icon': '#CACBCE', // grey-100
           '--primary-background': '#0B101B', // grey-900
-          '--primary-interactive': '#C8047D', // pink-500
-          '--primary-interactive-accent': '#E81899', // pink-400
-          '--primary-interactive-hover': '#E81899', // pink-400
-          '--primary-border-hover': '#FF6FC8', // pink-200
+          '--primary-interactive': '#2A35BD', //Puffer secondary color
+          '--primary-interactive-accent': '#2A35BD', //Puffer secondary color
+          '--primary-interactive-hover': '#2A35BD', //Puffer secondary color
+          '--primary-border-hover': '#2A35BD', //Puffer secondary color
           '--primary-border-dark': '#5D636F', // grey-500
           '--primary-border-accent': '#E81899', // pink-400
           '--primary-base-background': '#FFFFFF', // grey-0
@@ -267,11 +267,11 @@ export default {
 
           // ================================ //
 
-          primary: '#C8047D', // pink-500,
+          primary: '#2A35BD', //Puffer secondary color
           'primary-focus': '#E81899', // pink-400
           'primary-content': '#F3F3F3', // grey-10
 
-          secondary: '#E81899', // pink-400
+          secondary: '#2A35BD', //Puffer secondary color
           // 'secondary-focus': '',
           'secondary-content': '#ADB1B8', // grey-200
 
@@ -296,16 +296,16 @@ export default {
           'color-scheme': 'light',
           '--btn-text-case': 'capitalize',
 
-          '--primary-brand': '#C8047D', // pink-500
+          '--primary-brand': '#2A35BD', //Puffer secondary color
           '--primary-content': '#191E28', // grey-800
-          '--primary-link': '#C8047D', // pink-500
+          '--primary-link': '#2A35BD', //Puffer secondary color
           '--primary-link-hover': '#E81899', // pink-400
           '--primary-icon': '#5D636F', // grey-500
           '--primary-background': '#FAFAFA', // grey-5
-          '--primary-interactive': '#C8047D', // pink-500
-          '--primary-interactive-accent': '#E81899', // pink-400
-          '--primary-interactive-hover': '#E3E3E3', //grey-50
-          '--primary-border-hover': '#FF6FC8', // pink-200
+          '--primary-interactive': '#2A35BD', //Puffer secondary color
+          '--primary-interactive-accent': '#2A35BD', //Puffer secondary color
+          '--primary-interactive-hover': '#2A35BD', //Puffer secondary color
+          '--primary-border-hover': '#2A35BD', //Puffer secondary color
           '--primary-border-accent': '#E81899', // pink-400
 
           // TODO: these two are yet to be decided
@@ -347,7 +347,7 @@ export default {
 
           // ================================ //
 
-          primary: '#C8047D', // pink-500,
+          primary: '#2A35BD', //Puffer secondary color
           'primary-focus': '#E81899', // pink-400
           'primary-content': '#191E28', // grey-800
 

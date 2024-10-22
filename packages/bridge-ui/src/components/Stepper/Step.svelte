@@ -14,7 +14,7 @@
 
 <style>
   .step::before {
-    background-color: rgba(255, 111, 200, 0.2) !important;
+    background-color: rgba(42, 53, 189, 1) !important;
   }
   .step-primary::before {
     background-color: var(--primary-brand) !important;
