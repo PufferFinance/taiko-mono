@@ -11,7 +11,7 @@ import "./IProverRegistry.sol";
 import "./IVerifier.sol";
 import "./LibPublicInput.sol";
 
-contract ProverRegistry is IVerifier, IProverRegistry, EssentialContract {
+contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract {
     IAttestationVerifier public verifier; // slot 1
     uint256 public attestValiditySeconds; // slot 2
     uint256 public maxBlockNumberDiff; // slot 3
