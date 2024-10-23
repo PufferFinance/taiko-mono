@@ -195,6 +195,10 @@ export default {
 
         'divider-border': 'var(--divider-border)',
       },
+
+      backgroundColor: {
+        'custom-primary': 'var(--custom-bg-primary)',
+      },
     },
   },
 
@@ -290,6 +294,9 @@ export default {
           'error-content': '#F15C5D', // red-300
           warning: '#382800', // yellow-800
           'warning-content': '#EBB222', // yellow-400
+
+          // Add your custom background colors for dark theme
+          '--custom-bg-primary': '##0E152E',
         },
 
         light: {
@@ -370,6 +377,9 @@ export default {
           'error-content': '#BB1A1B', // red-600
           warning: '#FFF6DE', // yellow-10
           'warning-content': '#775602', // yellow-700
+
+          // Add your custom background colors for light theme
+          '--custom-bg-primary': '#3D88FF0D', // 5% opacity of #3D88FF
         },
       },
     ],
