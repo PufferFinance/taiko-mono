@@ -89,7 +89,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         TaikoData.TierProof calldata _proof
     )
         external
-        onlyFromNamedEither(LibStrings.B_TAIKO, LibStrings.B_TIER_TEE_ANY)
+        onlyFromNamedEither(LibStrings.B_TAIKO, LibStrings.B_TIER_TDX)
     {
         // Do not run proof verification to contest an existing proof
         if (_ctx.isContesting) return;
@@ -103,7 +103,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
 
         address oldInstance = ECDSA.recover(
             LibPublicInput.hashPublicInputs(
-                _tran, address(this), newInstance, _ctx.prover, _ctx.metaHash, taikoChainId()
+                _tran, address(this), newInstance, _ctx.prover, _ctx.metaHash, uniFiChainId()
             ),
             _proof.data[24:]
         );
@@ -129,18 +129,17 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
     /// @notice verify multiple proofs in one call
     function verifyProofs(Proof[] calldata _proofs)
         external
+        onlyFromNamedEither(LibStrings.B_TAIKO, LibStrings.B_TIER_TDX)
     {
         require(_proofs.length >= 1, "missing proofs");
         for (uint i = 0; i < _proofs.length; i++) {
             IProverRegistry.SignedPoe calldata poe = _proofs[i].poe;
-            address oldInstance = recoverOldInstance(
-                poe.poe,
-                poe.newInstance,
-                _proofs[i].ctx.prover,
-                _proofs[i].ctx.metaHash,
+            address oldInstance = ECDSA.recover(
+                LibPublicInput.hashPublicInputs(
+                    poe.transition, address(this), poe.newInstance, _proofs[i].ctx.prover,_proofs[i].ctx.metaHash, uniFiChainId()
+                ),
                 poe.signature
             );
-
 
             ProverInstance memory prover = checkProver(poe.id, oldInstance);
             if (poe.teeType != prover.teeType) revert PROVER_TYPE_MISMATCH();
@@ -151,24 +150,6 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         }
 
         emit VerifyProof(_proofs.length);
-    }
-
-    function recoverOldInstance(
-        Poe memory _poe,
-        address _newInstance,
-        address _prover,
-        bytes32 _metaHash,
-        bytes memory _signature
-    ) public view returns (address) {
-        return ECDSA.recover(
-            keccak256(getSignedMsg(
-                _poe,
-                _newInstance,
-                _prover,
-                _metaHash
-            )),
-            _signature
-        );
     }
 
     function checkProver(
@@ -184,24 +165,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         return prover;
     }
 
-    function getSignedMsg(
-        Poe memory _poe,
-        address _newInstance,
-        address _prover,
-        bytes32 _metaHash
-    ) public view returns (bytes memory) {
-        return abi.encode(
-            "VERIFY_PROOF",
-            taikoChainId(),
-            address(this),
-            _poe,
-            _newInstance,
-            _prover,
-            _metaHash
-        );
-    }
-
-    function taikoChainId() internal view virtual returns (uint64) {
+    function uniFiChainId() internal view virtual returns (uint64) {
         return ITaikoL1(resolve(LibStrings.B_TAIKO, false)).getConfig().chainId;
     }
 

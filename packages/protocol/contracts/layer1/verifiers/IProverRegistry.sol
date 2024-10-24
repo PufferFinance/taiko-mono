@@ -10,15 +10,8 @@ interface IProverRegistry {
         uint256 teeType; // 1: IntelTDX
     }
 
-    struct Poe {
-        bytes32 parentHash;
-        bytes32 blockHash;
-        bytes32 stateRoot;
-        bytes32 graffiti;
-    }
-
     struct SignedPoe {
-        Poe poe;
+        TaikoData.Transition transition;
         uint256 id;
         address newInstance;
         bytes signature;
