@@ -227,7 +227,7 @@ export default {
           '--primary-icon': '#CACBCE', // grey-100
           '--primary-background': '#0B101B', // grey-900
           '--primary-interactive': '#2A35BD', //Puffer secondary color
-          '--primary-interactive-accent': '#2A35BD', //Puffer secondary color
+          '--primary-interactive-accent': '#5653eb', //Puffer secondary color
           '--primary-interactive-hover': '#2A35BD', //Puffer secondary color
           '--primary-border-hover': '#2A35BD', //Puffer secondary color
           '--primary-border-dark': '#5D636F', // grey-500
@@ -243,7 +243,7 @@ export default {
           '--secondary-interactive-hover': '#ADB1B8', // grey-200
 
           '--tertiary-content': '#5D636F', // grey-500
-          '--tertiary-interactive-accent': '#5D636F', // grey-500
+          '--tertiary-interactive-accent': '#3D88FF0D', // grey-500
           '--tertiary-interactive-hover': '#444A55', // grey-600
 
           '--positive-sentiment': '#47E0A0', // green-300
@@ -310,7 +310,7 @@ export default {
           '--primary-icon': '#5D636F', // grey-500
           '--primary-background': '#FAFAFA', // grey-5
           '--primary-interactive': '#2A35BD', //Puffer secondary color
-          '--primary-interactive-accent': '#2A35BD', //Puffer secondary color
+          '--primary-interactive-accent': '#5653eb', //Puffer secondary color
           '--primary-interactive-hover': '#2A35BD', //Puffer secondary color
           '--primary-border-hover': '#2A35BD', //Puffer secondary color
           '--primary-border-accent': '#E81899', // pink-400
@@ -320,7 +320,8 @@ export default {
           '--primary-base-content': '#191E28', // grey-800
 
           '--secondary-brand': '#E81899', // pink-400
-          '--secondary-content': '#444A55', // grey-600
+          '--secondary-content': '#424242', // grey-600
+
           '--secondary-icon': '#2B303B', // grey-700
           '--secondary-interactive-accent': '#E3E3E3', // grey-50
           '--secondary-interactive-hover': '##F3F3F3', // grey-10
@@ -329,7 +330,7 @@ export default {
 
           // TODO: these two are missing. Remain the same as dark theme
           '--tertiary-interactive-hover': '#444A55', // grey-600
-          '--tertiary-interactive-accent': '#5D636F', // grey-500
+          '--tertiary-interactive-accent': '#3D88FF0D', // grey-500
 
           '--positive-sentiment': '#005E36', // green-700
           '--positive-background': '#BFFFE4', // green-50
