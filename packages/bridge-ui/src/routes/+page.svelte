@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-  <title>Puffer</title>
+  <title>Puffer Bridge</title>
 </svelte:head>
 <Page>
   <Bridge />
