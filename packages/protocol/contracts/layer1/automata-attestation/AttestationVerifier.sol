@@ -7,7 +7,7 @@ import "./interfaces/IAttestationVerifier.sol";
 
 /// @title AttestationVerifier
 contract AttestationVerifier is IAttestationVerifier, EssentialContract {
-    IAttestation public attestationVerifier; // slot 1
+    IAttestationV2 public attestationVerifier; // slot 1
 
     uint256[49] private __gap;
 
@@ -19,7 +19,7 @@ contract AttestationVerifier is IAttestationVerifier, EssentialContract {
         initializer
     {
         __Essential_init(_owner);
-        attestationVerifier = IAttestation(_attestationVerifier);
+        attestationVerifier = IAttestationV2(_attestationVerifier);
     }
 
     error INVALID_REPORT();
