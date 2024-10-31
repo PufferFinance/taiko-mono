@@ -29,6 +29,8 @@ interface IProverRegistry {
         uint256 referenceBlockNumber;
         bytes32 referenceBlockHash;
         bytes32 binHash;
+
+        bytes ext;
     }
 
     error INVALID_BLOCK_NUMBER();
@@ -36,15 +38,18 @@ interface IProverRegistry {
     error BLOCK_NUMBER_MISMATCH();
     error REPORT_USED();
     error INVALID_PROVER_INSTANCE();
-    error INVALID_REPORT();
-    error INVALID_REPORT_DATA();
-    error REPORT_DATA_MISMATCH();
     error PROVER_INVALID_PROOF();
     error PROVER_INVALID_INSTANCE_ID(uint256);
     error PROVER_INVALID_ADDR(address);
     error PROVER_TYPE_MISMATCH();
     error PROVER_ADDR_MISMATCH(address, address);
     error PROVER_OUT_OF_DATE(uint256);
+
+    // attestation verifier
+    error INVALID_REPORT();
+    error INVALID_REPORT_DATA();
+    error REPORT_DATA_MISMATCH(bytes32 want, bytes32 got);
+    error INVALID_PRC10(bytes32 pcr10);
 
     event InstanceAdded(
         uint256 indexed id,
