@@ -64,7 +64,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         _checkBlockNumber(_data.referenceBlockNumber, _data.referenceBlockHash);
         bytes32 dataHash = keccak256(abi.encode(_data));
 
-        verifier.verifyAttestation(_report, dataHash);
+        verifier.verifyAttestation(_report, dataHash, _data.ext);
 
         bytes32 reportHash = keccak256(_report);
         if (attestedReports[reportHash]) revert REPORT_USED();
@@ -165,7 +165,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         return prover;
     }
 
-    function uniFiChainId() internal view virtual returns (uint64) {
+    function uniFiChainId() public view virtual returns (uint64) {
         return ITaikoL1(resolve(LibStrings.B_TAIKO, false)).getConfig().chainId;
     }
 
