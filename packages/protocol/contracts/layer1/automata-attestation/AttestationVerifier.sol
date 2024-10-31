@@ -7,28 +7,37 @@ import "./interfaces/IAttestationVerifier.sol";
 
 /// @title AttestationVerifier
 contract AttestationVerifier is IAttestationVerifier, EssentialContract {
-    IAttestationV2 public attestationVerifier; // slot 1
+    IAttestation public attestationVerifier; // slot 1
+    mapping(bytes32 pcr10 => bool trusted) public trustedPcr10; // slot 2
+    bool checkPcr10; // slot3
 
-    uint256[49] private __gap;
+    uint256[47] private __gap;
 
     function init(
         address _owner,
-        address _attestationVerifier
+        address _attestationVerifier,
+        bool _checkPcr10
     )
         external
         initializer
     {
         __Essential_init(_owner);
-        attestationVerifier = IAttestationV2(_attestationVerifier);
+        attestationVerifier = IAttestation(_attestationVerifier);
+        checkPcr10 = _checkPcr10;
     }
 
-    error INVALID_REPORT();
-    error INVALID_REPORT_DATA();
-    error REPORT_DATA_MISMATCH();
+    function setCheckPcr10(bool _check) external onlyOwner {
+        checkPcr10 = _check;
+    }
+
+    function setImagePcr10(bytes32 _pcr10, bool _trusted) external onlyOwner {
+        trustedPcr10[_pcr10] = _trusted;
+    }
 
     function verifyAttestation(
         bytes calldata _report,
-        bytes32 _userData
+        bytes32 _userData,
+        bytes calldata _ext
     ) 
         external
     {
@@ -47,6 +56,12 @@ contract AttestationVerifier is IAttestationVerifier, EssentialContract {
             )
         }
 
-        if (quoteBodyLast32 != _userData) revert REPORT_DATA_MISMATCH();
+        ExtTpmInfo memory info = abi.decode(_ext, (ExtTpmInfo));
+
+        bytes32 dataWithNonce = sha256(abi.encodePacked(info.akDer, _userData));
+        if (quoteBodyLast32 != dataWithNonce) revert REPORT_DATA_MISMATCH(quoteBodyLast32, dataWithNonce);
+        // TODO: verify tpm info
+
+        if (checkPcr10 && !trustedPcr10[info.pcr10]) revert INVALID_PRC10(info.pcr10);
     }
 }
