@@ -62,6 +62,8 @@ services:
       - "${L1_NODE_VERSION}"
       - --prover.l2NodeVersion
       - "${L2_NODE_VERSION}"
+      - --prover.blockConfirmations
+      - "${PROVER_BLOCK_CONFIRMATIONS}"
       - --verbosity
       - "4"
     extra_hosts:
