@@ -11,10 +11,16 @@
   import { Icon } from '$components/Icon';
   import { LinkButton } from '$components/LinkButton';
   import { ThemeButton } from '$components/ThemeButton';
-  import { PUBLIC_DEFAULT_EXPLORER, PUBLIC_GUIDE_URL, PUBLIC_TESTNET_NAME } from '$env/static/public';
+  import {
+    PUBLIC_DEFAULT_EXPLORER,
+    PUBLIC_DEFAULT_FAUCET_URL,
+    PUBLIC_GUIDE_URL,
+    PUBLIC_TESTNET_NAME,
+  } from '$env/static/public';
   import { connectedSourceChain } from '$stores/network';
 
   let testnetName = PUBLIC_TESTNET_NAME || '';
+  let faucetUrl = PUBLIC_DEFAULT_FAUCET_URL || '';
   let drawerToggleElem: HTMLInputElement;
 
   export let sideBarOpen: boolean;
@@ -74,9 +80,9 @@
                 <span>{$t('nav.bridge')}</span>
               </LinkButton>
             </li>
-            {#if testnetName !== ''}
+            {#if testnetName !== '' && faucetUrl !== ''}
               <li>
-                <LinkButton href="/faucet" active={isFaucetPage}>
+                <LinkButton external href={faucetUrl} active={isFaucetPage}>
                   <Icon type="faucet" fillClass={getIconFillClass(isFaucetPage)} />
                   <span>{$t('nav.faucet')}</span>
                 </LinkButton>
