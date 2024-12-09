@@ -24,7 +24,7 @@ contract TestTierProvider is ITierProvider, ITierRouter {
                 verifierName: "",
                 validityBond: 250 ether, // TKO
                 contestBond: 500 ether, // TKO
-                cooldownWindow: 1440, //24 hours
+                cooldownWindow: 1, //1 minute
                 provingWindow: 30, // 0.5 hours
                 maxBlocksToVerifyPerProof: 0
             });
@@ -66,7 +66,7 @@ contract TestTierProvider is ITierProvider, ITierRouter {
     /// @inheritdoc ITierProvider
     function getMinTier(address, uint256 _rand) public pure override returns (uint16) {
         // 10% will be selected to require SGX proofs.
-        if (_rand % 10 == 0) return LibTiers.TIER_SGX;
+        // if (_rand % 10 == 0) return LibTiers.TIER_SGX;
         // Other blocks are optimistic, without validity proofs.
         return LibTiers.TIER_OPTIMISTIC;
     }

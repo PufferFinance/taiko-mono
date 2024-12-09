@@ -295,7 +295,7 @@ contract DeployProtocolOnL1 is DeployCapability {
         {
             taikoL1 = TaikoL1(address(new DevnetTaikoL1()));
         } else {
-            taikoL1 = TaikoL1(address(new TaikoL1()));
+            taikoL1 = TaikoL1(address(new DevnetTaikoL1()));
         }
 
         deployProxy({
