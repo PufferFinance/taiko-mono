@@ -17,7 +17,6 @@ contract L2EnableBridge is Script {
     address public l1Service = vm.envAddress("L1_SIGNAL_SERVICE_ADDRESS");
 
     modifier broadcast() {
-        uint256 privateKey = vm.envUint("PRIVATE_KEY");
         require(privateKey != 0, "invalid priv key");
         vm.startBroadcast();
         _;
