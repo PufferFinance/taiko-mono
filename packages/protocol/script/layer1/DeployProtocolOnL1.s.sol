@@ -25,6 +25,7 @@ import "../../contracts/layer1/mainnet/rollup/MainnetGuardianProver.sol";
 import "../../contracts/layer1/mainnet/rollup/MainnetTaikoL1.sol";
 import "../../contracts/layer1/mainnet/rollup/verifiers/MainnetSgxVerifier.sol";
 import "../../contracts/layer1/testnet/TestnetUniFiL1.sol";
+import "../../contracts/layer1/testnet/TestnetTierProvider.sol";
 import "../../contracts/layer1/verifiers/ProverRegistryVerifier.sol";
 import "../../contracts/layer1/mainnet/multirollup/MainnetBridge.sol";
 import "../../contracts/layer1/mainnet/multirollup/MainnetERC1155Vault.sol";
@@ -37,7 +38,6 @@ import "../../contracts/layer1/tiers/TierProviderV2.sol";
 import "../../contracts/layer1/token/TaikoToken.sol";
 import "../../contracts/layer1/verifiers/Risc0Verifier.sol";
 import "../../contracts/layer1/verifiers/SP1Verifier.sol";
-import "../../test/layer1/based/TestTierProvider.sol";
 import "../../test/shared/token/FreeMintERC20.sol";
 import "../../test/shared/token/MayFailFreeMintERC20.sol";
 import "../../test/shared/DeployCapability.sol";
@@ -452,7 +452,7 @@ contract DeployProtocolOnL1 is DeployCapability {
         if (keccak256(abi.encode(tierProviderName)) == keccak256(abi.encode("devnet"))) {
             return address(new DevnetTierProvider());
         } else if (keccak256(abi.encode(tierProviderName)) == keccak256(abi.encode("testnet"))) {
-            return address(new TestTierProvider());
+            return address(new TestnetTierProvider());
         } else if (keccak256(abi.encode(tierProviderName)) == keccak256(abi.encode("mainnet"))) {
             return address(new TierProviderV2());
         } else {
