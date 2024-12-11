@@ -26,6 +26,7 @@ import "src/layer1/mainnet/rollup/MainnetTaikoL1.sol";
 import "src/layer1/mainnet/rollup/MainnetTierRouter.sol";
 import "src/layer1/mainnet/rollup/verifiers/MainnetSgxVerifier.sol";
 import "src/layer1/testnet/TestnetUniFiL1.sol";
+import "src/layer1/testnet/TestnetTierProvider.sol";
 import "src/layer1/verifiers/ProverRegistryVerifier.sol";
 import "src/layer1/mainnet/multirollup/MainnetBridge.sol";
 import "src/layer1/mainnet/multirollup/MainnetERC1155Vault.sol";
@@ -456,7 +457,7 @@ contract DeployProtocolOnL1 is DeployCapability {
         if (keccak256(abi.encode(tierRouterName)) == keccak256(abi.encode("devnet"))) {
             return address(new DevnetTierRouter());
         } else if (keccak256(abi.encode(tierRouterName)) == keccak256(abi.encode("testnet"))) {
-            return address(new TestTierRouter());
+            return address(new TestnetTierProvider());
         } else if (keccak256(abi.encode(tierRouterName)) == keccak256(abi.encode("mainnet"))) {
             return address(new MainnetTierRouter(DAO_FALLBACK_PROPOSER));
         } else {
