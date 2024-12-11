@@ -10,7 +10,7 @@ import "../../../contracts/layer1/tiers/ITierRouter.sol";
 /// @dev Labeled in AddressResolver as "tier_router"
 /// @custom:security-contact security@taiko.xyz
 contract TestnetTierProvider is ITierProvider, ITierRouter {
-    uint256[50] private __gap;
+uint256[50] private __gap;
 
     /// @inheritdoc ITierRouter
     function getProvider(uint256) external view returns (address) {
@@ -19,17 +19,6 @@ contract TestnetTierProvider is ITierProvider, ITierRouter {
     /// @inheritdoc ITierProvider
 
     function getTier(uint16 _tierId) public pure override returns (ITierProvider.Tier memory) {
-        if (_tierId == LibTiers.TIER_OPTIMISTIC) {
-            return ITierProvider.Tier({
-                verifierName: "",
-                validityBond: 250 ether, // TKO
-                contestBond: 500 ether, // TKO
-                cooldownWindow: 1, // 1 minute
-                provingWindow: 30, // 0.5 hours
-                maxBlocksToVerifyPerProof: 0
-            });
-        }
-
         if (_tierId == LibTiers.TIER_TDX) {
             return ITierProvider.Tier({
                 verifierName: LibStrings.B_TIER_TDX,
@@ -58,16 +47,12 @@ contract TestnetTierProvider is ITierProvider, ITierRouter {
     /// @inheritdoc ITierProvider
     function getTierIds() public pure override returns (uint16[] memory tiers_) {
         tiers_ = new uint16[](3);
-        tiers_[0] = LibTiers.TIER_OPTIMISTIC;
-        tiers_[1] = LibTiers.TIER_TDX;
-        tiers_[2] = LibTiers.TIER_GUARDIAN;
+        tiers_[0] = LibTiers.TIER_TDX;
+        tiers_[1] = LibTiers.TIER_GUARDIAN;
     }
 
     /// @inheritdoc ITierProvider
     function getMinTier(address, uint256 _rand) public pure override returns (uint16) {
-        // 10% will be selected to require TDX proofs.
-        if (_rand % 10 == 0) return LibTiers.TIER_TDX;
-        // Other blocks are optimistic, without validity proofs.
-        return LibTiers.TIER_OPTIMISTIC;
+        return LibTiers.TIER_TDX;
     }
 }
