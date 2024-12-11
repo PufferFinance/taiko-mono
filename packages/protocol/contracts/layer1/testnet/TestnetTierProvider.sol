@@ -10,7 +10,7 @@ import "../../../contracts/layer1/tiers/ITierRouter.sol";
 /// @dev Labeled in AddressResolver as "tier_router"
 /// @custom:security-contact security@taiko.xyz
 contract TestnetTierProvider is ITierProvider, ITierRouter {
-uint256[50] private __gap;
+    uint256[50] private __gap;
 
     /// @inheritdoc ITierRouter
     function getProvider(uint256) external view returns (address) {
