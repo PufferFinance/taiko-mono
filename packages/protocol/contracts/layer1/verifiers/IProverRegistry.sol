@@ -29,7 +29,6 @@ interface IProverRegistry {
         uint256 referenceBlockNumber;
         bytes32 referenceBlockHash;
         bytes32 binHash;
-
         bytes ext;
     }
 
@@ -52,27 +51,20 @@ interface IProverRegistry {
     error INVALID_PRC10(bytes32 pcr10);
 
     event InstanceAdded(
-        uint256 indexed id,
-        address indexed instance,
-        address replaced,
-        uint256 validUntil
+        uint256 indexed id, address indexed instance, address replaced, uint256 validUntil
     );
     event VerifyProof(uint256 proofs);
 
     /// @notice register prover instance with quote
-    function register(
-        bytes calldata _report,
-        ReportData calldata _data
-    ) external;
+    function register(bytes calldata _report, ReportData calldata _data) external;
 
     /// TODO: should we need to add teeType?
     /// @notice validate whether the prover with (instanceID, address)
     function checkProver(
         uint256 _instanceID,
         address _proverAddr
-    ) external view returns (ProverInstance memory);
-
-    /// TODO: each proof should coming from different teeType
-    /// @notice verify multiple proofs in one call
-    function verifyProofs(Proof[] calldata _proofs) external;
+    )
+        external
+        view
+        returns (ProverInstance memory);
 }
