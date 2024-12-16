@@ -46,6 +46,11 @@ type TDXProofProducer struct {
 	DummyProofProducer
 }
 
+type AutomataRequestProofBodyResponse struct {
+	Version uint64 `json:"version"`
+	Data    string `json:"data"`
+}
+
 func (t *TDXProofProducer) RequestProof(
 	ctx context.Context,
 	opts *ProofRequestOptions,
