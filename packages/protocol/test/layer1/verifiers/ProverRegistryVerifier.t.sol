@@ -12,6 +12,9 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
     address KNOWN_ADDRESS = address(0xAAAAAFE838B80D164535CD4d50058E456A4f9E16);
     uint256 KNOWN_ADDRESS_PRIV_KEY =
         0xde9b0c39e60bb0404347b588c6891947db2c873942b553d5d15c03ea30c04c63;
+    address KNOWN_ADDRESS_V2 = address(0x3B65e7318AC8ba9B7e488f581aAC5E64DC70eC9b);
+    uint256 KNOWN_ADDRESS_PRIV_KEY_V2 =
+        0xc793ff2348b2667c400eded183c779a846997dc79d644ed336d26adadfd9fd80;
 
     AttestationVerifier mockAttestationVerifier;
     AttestationVerifier attestationVerifier;
@@ -45,6 +48,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
                 )
             })
         );
+        attestationVerifier.setCheckPcr10(true);
 
         pv = ProverRegistryVerifier(
             deployProxy({
@@ -99,6 +103,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
     function _tierProof(
         uint32 id,
         uint16 tier,
+        address newSigner,
         IVerifier.Context memory _ctx,
         TaikoData.Transition memory _trans
     )
@@ -108,7 +113,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
     {
         uint64 chainId = L1.getConfig().chainId;
         bytes32 signedHash = LibPublicInput.hashPublicInputs(
-            _trans, address(pv), KNOWN_ADDRESS, _ctx.prover, _ctx.metaHash, chainId
+            _trans, address(pv), newSigner, _ctx.prover, _ctx.metaHash, chainId
         );
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(KNOWN_ADDRESS_PRIV_KEY, signedHash);
@@ -116,8 +121,34 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
 
         proof = TaikoData.TierProof({
             tier: tier,
-            data: abi.encodePacked(id, KNOWN_ADDRESS, signature)
+            data: abi.encodePacked(id, newSigner, signature)
         });
+    }
+
+    function test_upgrade() external {
+        address verifierAddr1 = address(new ProverRegistryVerifier());
+        address verifierAddr2 = address(new ProverRegistryVerifier());
+        ProverRegistryVerifier verifier = ProverRegistryVerifier(
+            deployProxy({
+                name: "tier_tdx_upgrade",
+                impl: verifierAddr1,
+                data: abi.encodeCall(
+                    ProverRegistryVerifier.init,
+                    (address(0), address(addressManager), address(mockAttestationVerifier), 86_400, 25)
+                )
+            })
+        );
+        assertEq(verifier.maxBlockNumberDiff(), 25);
+        assertEq(verifier.attestValiditySeconds(), 86_400);
+
+
+
+        verifier.upgradeToAndCall(verifierAddr2, abi.encodeCall(
+            ProverRegistryVerifier.reinitialize,
+            (2, address(mockAttestationVerifier), 123, 10)
+        ));
+        assertEq(verifier.maxBlockNumberDiff(), 10);
+        assertEq(verifier.attestValiditySeconds(), 123);
     }
 
     function test_register() external {
@@ -145,6 +176,10 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
         pv.register(hex"010d0d0d", reportData); // should success
         vm.expectRevert(abi.encodeWithSignature("REPORT_USED()"));
         pv.register(hex"010d0d0d", reportData);
+
+        vm.roll(block.number + 50);
+        vm.expectRevert(abi.encodeWithSignature("BLOCK_NUMBER_OUT_OF_DATE()"));
+        pv.register(fakeReport, reportData);
     }
 
     function test_verifyProof() external {
@@ -153,7 +188,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
 
         IVerifier.Context memory _ctx = _proofContext();
         TaikoData.Transition memory _trans = _proofTransition();
-        TaikoData.TierProof memory _proof = _tierProof(id, 100, _ctx, _trans);
+        TaikoData.TierProof memory _proof = _tierProof(id, 100, KNOWN_ADDRESS_V2, _ctx, _trans);
 
         vm.stopPrank();
 
@@ -169,7 +204,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
 
         IVerifier.Context memory _ctx = _proofContext();
         TaikoData.Transition memory _trans = _proofTransition();
-        TaikoData.TierProof memory _proof = _tierProof(id, 100, _ctx, _trans);
+        TaikoData.TierProof memory _proof = _tierProof(id, 100, KNOWN_ADDRESS, _ctx, _trans);
 
         vm.expectRevert(abi.encodeWithSignature("RESOLVER_DENIED()"));
         pv.verifyProof(_ctx, _trans, _proof);
@@ -181,7 +216,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
         vm.expectRevert(abi.encodeWithSignature("PROVER_INVALID_PROOF()"));
         pv.verifyProof(_ctx, _trans, _proof);
 
-        _proof = _tierProof(id, 100, _ctx, _trans);
+        _proof = _tierProof(id, 100, KNOWN_ADDRESS, _ctx, _trans);
         vm.expectRevert(abi.encodeWithSignature("PROVER_TYPE_MISMATCH()"));
         pv.verifyProof(_ctx, _trans, _proof);
 
@@ -190,7 +225,7 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
         pv.verifyProof(_ctx, _trans, _proof);
 
         _ctx.metaHash = bytes32("ab");
-        _proof = _tierProof(id + 1, 100, _ctx, _trans);
+        _proof = _tierProof(id + 1, 100, KNOWN_ADDRESS, _ctx, _trans);
         vm.expectRevert();
         pv.verifyProof(_ctx, _trans, _proof);
 
@@ -216,7 +251,19 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
         bytes32 reportData = sha256(abi.encodePacked(tpm.akDer, userData));
         bytes32 wrongReportData = sha256(abi.encodePacked(tpm.akDer, bytes32("wrongUserData")));
         bytes memory mockReport = abi.encodePacked(reportData);
+
+        attestationVerifier.setCheckPcr10(true);
         vm.expectRevert(abi.encodeWithSignature("INVALID_PRC10(bytes32)", pcr10));
+        attestationVerifier.verifyAttestation(mockReport, userData, ext);
+
+        {
+            // should pass when disabled the pcr10 checking
+            attestationVerifier.setCheckPcr10(false);
+            attestationVerifier.verifyAttestation(mockReport, userData, ext);
+            attestationVerifier.setCheckPcr10(true);
+        }
+
+        attestationVerifier.setImagePcr10(pcr10, true);
         attestationVerifier.verifyAttestation(mockReport, userData, ext);
 
         vm.expectRevert(
@@ -225,9 +272,6 @@ contract ProverRegistryVerifierTest is TaikoL1TestBase {
             )
         );
         attestationVerifier.verifyAttestation(mockReport, bytes32("wrongUserData"), ext);
-
-        attestationVerifier.setImagePcr10(pcr10, true);
-        attestationVerifier.verifyAttestation(mockReport, userData, ext);
 
         vm.expectRevert(abi.encodeWithSignature("INVALID_REPORT_DATA()"));
         attestationVerifier.verifyAttestation(bytes("invalidReport"), userData, ext);

@@ -58,7 +58,6 @@ interface IProverRegistry {
     /// @notice register prover instance with quote
     function register(bytes calldata _report, ReportData calldata _data) external;
 
-    /// TODO: should we need to add teeType?
     /// @notice validate whether the prover with (instanceID, address)
     function checkProver(
         uint256 _instanceID,

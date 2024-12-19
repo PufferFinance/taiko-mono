@@ -59,7 +59,6 @@ contract AttestationVerifier is IAttestationVerifier, EssentialContract {
         if (quoteBodyLast32 != dataWithNonce) {
             revert REPORT_DATA_MISMATCH(quoteBodyLast32, dataWithNonce);
         }
-        // TODO: verify tpm info
 
         if (checkPcr10 && !trustedPcr10[info.pcr10]) revert INVALID_PRC10(info.pcr10);
     }
