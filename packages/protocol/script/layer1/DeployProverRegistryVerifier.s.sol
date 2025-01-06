@@ -23,8 +23,16 @@ contract DeployProverRegistryVerifier is DeployCapability {
         deployProxy({
             name: "tier_tdx",
             impl: address(proverRegistryVerifier),
-            data: abi.encodeCall(ProverRegistryVerifier.init, (msg.sender, rollupAddressManager, attestationVerifier, attestationValiditySeconds, maxBlockNumberDiff)),
-            registerTo: rollupAddressManager
+            data: abi.encodeCall(
+                ProverRegistryVerifier.init,
+                (
+                    msg.sender,
+                    rollupAddressManager,
+                    attestationVerifier,
+                    attestationValiditySeconds,
+                    maxBlockNumberDiff
+                )
+            )
         });
 
         vm.stopBroadcast();
