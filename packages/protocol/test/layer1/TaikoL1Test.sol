@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
+import "src/layer1/automata-attestation/AttestationVerifier.sol";
+import "src/layer1/verifiers/ProverRegistryVerifier.sol";
 import "src/layer1/based/TaikoL1.sol";
 import "src/layer1/token/TaikoToken.sol";
 import "src/layer1/verifiers/SgxVerifier.sol";

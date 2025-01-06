@@ -16,5 +16,10 @@ interface IAttestationVerifier {
     error INVALID_PRC10(bytes32 pcr10);
 
     function setImagePcr10(bytes32 _pcr10, bool _trusted) external;
-    function verifyAttestation(bytes calldata _report, bytes32 _userData, bytes calldata ext) external;
+    function verifyAttestation(
+        bytes calldata _report,
+        bytes32 _userData,
+        bytes calldata ext
+    )
+        external;
 }

@@ -28,7 +28,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         address _verifierAddr,
         uint256 _attestValiditySeconds,
         uint256 _maxBlockNumberDiff
-    ) 
+    )
         external
         initializer
     {
@@ -55,12 +55,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
     }
 
     /// @notice register prover instance with quote
-    function register(
-        bytes calldata _report,
-        ReportData calldata _data
-    )
-        external
-    {
+    function register(bytes calldata _report, ReportData calldata _data) external {
         _checkBlockNumber(_data.referenceBlockNumber, _data.referenceBlockHash);
         bytes32 dataHash = keccak256(abi.encode(_data));
 
@@ -74,11 +69,7 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         nextInstanceId += 1;
 
         uint256 validUnitl = block.timestamp + attestValiditySeconds;
-        attestedProvers[instanceID] = ProverInstance(
-            _data.addr,
-            validUnitl,
-            _data.teeType
-        );
+        attestedProvers[instanceID] = ProverInstance(_data.addr, validUnitl, _data.teeType);
 
         emit InstanceAdded(instanceID, _data.addr, address(0), validUnitl);
     }
@@ -125,37 +116,14 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         notImplemented
     { }
 
-    /// TODO: each proof should coming from different teeType
-    /// @notice verify multiple proofs in one call
-    function verifyProofs(Proof[] calldata _proofs)
-        external
-        onlyFromNamedEither(LibStrings.B_TAIKO, LibStrings.B_TIER_TDX)
-    {
-        require(_proofs.length >= 1, "missing proofs");
-        for (uint i = 0; i < _proofs.length; i++) {
-            IProverRegistry.SignedPoe calldata poe = _proofs[i].poe;
-            address oldInstance = ECDSA.recover(
-                LibPublicInput.hashPublicInputs(
-                    poe.transition, address(this), poe.newInstance, _proofs[i].ctx.prover,_proofs[i].ctx.metaHash, uniFiChainId()
-                ),
-                poe.signature
-            );
-
-            ProverInstance memory prover = checkProver(poe.id, oldInstance);
-            if (poe.teeType != prover.teeType) revert PROVER_TYPE_MISMATCH();
-            if (oldInstance != poe.newInstance) {
-                attestedProvers[poe.id].addr = poe.newInstance;
-                emit InstanceAdded(poe.id, oldInstance, poe.newInstance, prover.validUntil);
-            }
-        }
-
-        emit VerifyProof(_proofs.length);
-    }
-
     function checkProver(
         uint256 _instanceID,
         address _proverAddr
-    ) public view returns (ProverInstance memory) {
+    )
+        public
+        view
+        returns (ProverInstance memory)
+    {
         ProverInstance memory prover;
         if (_instanceID == 0) revert PROVER_INVALID_INSTANCE_ID(_instanceID);
         if (_proverAddr == address(0)) revert PROVER_INVALID_ADDR(_proverAddr);
@@ -169,16 +137,16 @@ contract ProverRegistryVerifier is IVerifier, IProverRegistry, EssentialContract
         return ITaikoL1(resolve(LibStrings.B_TAIKO, false)).getConfig().chainId;
     }
 
-    // Due to the inherent unpredictability of blockHash, it mitigates the risk of mass-generation 
-    //   of attestation reports in a short time frame, preventing their delayed and gradual exploitation.
-    // This function will make sure the attestation report generated in recent ${maxBlockNumberDiff} blocks
-    function _checkBlockNumber(
-        uint256 blockNumber,
-        bytes32 blockHash
-    ) private view {
+    // Due to the inherent unpredictability of blockHash, it mitigates the risk of mass-generation
+    //   of attestation reports in a short time frame, preventing their delayed and gradual
+    // exploitation.
+    // This function will make sure the attestation report generated in recent ${maxBlockNumberDiff}
+    // blocks
+    function _checkBlockNumber(uint256 blockNumber, bytes32 blockHash) private view {
         if (blockNumber >= block.number) revert INVALID_BLOCK_NUMBER();
-        if (block.number - blockNumber >= maxBlockNumberDiff)
+        if (block.number - blockNumber >= maxBlockNumberDiff) {
             revert BLOCK_NUMBER_OUT_OF_DATE();
+        }
         if (blockhash(blockNumber) != blockHash) revert BLOCK_NUMBER_MISMATCH();
     }
 }

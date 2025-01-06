@@ -303,7 +303,9 @@ contract DeployProtocolOnL1 is DeployCapability {
         TaikoL1 taikoL1;
         if (keccak256(abi.encode(vm.envString("TIER_ROUTER"))) == keccak256(abi.encode("devnet"))) {
             taikoL1 = TaikoL1(address(new DevnetTaikoL1()));
-        } else if (keccak256(abi.encode(vm.envString("TIER_PROVIDER"))) == keccak256(abi.encode("testnet"))) {
+        } else if (
+            keccak256(abi.encode(vm.envString("TIER_PROVIDER"))) == keccak256(abi.encode("testnet"))
+        ) {
             taikoL1 = TaikoL1(address(new TestnetUniFiL1()));
         } else {
             taikoL1 = TaikoL1(address(new TaikoL1()));
@@ -341,13 +343,18 @@ contract DeployProtocolOnL1 is DeployCapability {
             address attestationVerifier = deployProxy({
                 name: "attestation_verifier",
                 impl: address(new AttestationVerifier()),
-                data: abi.encodeCall(AttestationVerifier.init, (owner, vm.envAddress("AUTOMATA_DCAP_ATTESTATION"), true))
+                data: abi.encodeCall(
+                    AttestationVerifier.init, (owner, vm.envAddress("AUTOMATA_DCAP_ATTESTATION"), true)
+                )
             });
 
             deployProxy({
                 name: "tier_tdx",
                 impl: address(new ProverRegistryVerifier()),
-                data: abi.encodeCall(ProverRegistryVerifier.init, (owner, rollupAddressManager, attestationVerifier, 3600, 25)),
+                data: abi.encodeCall(
+                    ProverRegistryVerifier.init,
+                    (owner, rollupAddressManager, attestationVerifier, 3600, 25)
+                ),
                 registerTo: rollupAddressManager
             });
         }
