@@ -3,6 +3,7 @@ package state
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/big"
 
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/bindings"
@@ -57,11 +58,11 @@ func (s *State) ResetL1Current(ctx context.Context, blockID *big.Int) error {
 		blockInfo, err = s.rpc.GetL2BlockInfo(ctx, blockID)
 	}
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get L2 block (%d) info from TaikoL1 contract: %w", blockID, err)
 	}
 	l1Current, err := s.rpc.L1.HeaderByNumber(ctx, new(big.Int).SetUint64(blockInfo.ProposedIn))
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to fetch L1 header by number (%d): %w", blockID, err)
 	}
 	s.SetL1Current(l1Current)
 

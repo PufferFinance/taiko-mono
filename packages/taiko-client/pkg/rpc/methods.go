@@ -537,17 +537,17 @@ func (c *Client) GetProtocolStateVariables(opts *bind.CallOpts) (*struct {
 	return GetProtocolStateVariables(c.TaikoL1, opts)
 }
 
-// GetLastVerifiedBlockHash gets the last verified block hash from TaikoL1 contract.
-func (c *Client) GetLastVerifiedBlockHash(ctx context.Context) (common.Hash, error) {
+// GetLastVerifiedBlock gets the last verified block from TaikoL1 contract.
+func (c *Client) GetLastVerifiedBlock(ctx context.Context) (struct {
+	BlockId    uint64 //nolint:stylecheck
+	BlockHash  [32]byte
+	StateRoot  [32]byte
+	VerifiedAt uint64
+}, error) {
 	ctxWithTimeout, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
-	b, err := c.TaikoL1.GetLastVerifiedBlock(&bind.CallOpts{Context: ctxWithTimeout})
-	if err != nil {
-		return common.Hash{}, err
-	}
-
-	return b.BlockHash, nil
+	return c.TaikoL1.GetLastVerifiedBlock(&bind.CallOpts{Context: ctxWithTimeout})
 }
 
 // GetL2BlockInfo fetches the L2 block information from the protocol.
@@ -709,10 +709,12 @@ func (c *Client) checkSyncedL1SnippetFromAnchor(
 	log.Info("Check synced L1 snippet from anchor", "blockID", blockID, "l1Height", l1Height)
 	block, err := c.L2.BlockByNumber(ctx, blockID)
 	if err != nil {
+		log.Error("Failed to fetch L2 block", "blockID", blockID, "error", err)
 		return false, err
 	}
 	parent, err := c.L2.BlockByHash(ctx, block.ParentHash())
 	if err != nil {
+		log.Error("Failed to fetch L2 parent block", "blockID", blockID, "parentHash", block.ParentHash(), "error", err)
 		return false, err
 	}
 
@@ -720,6 +722,7 @@ func (c *Client) checkSyncedL1SnippetFromAnchor(
 		block.Transactions()[0],
 	)
 	if err != nil {
+		log.Error("Failed to parse L1 snippet from anchor transaction", "blockID", blockID, "error", err)
 		return false, err
 	}
 
@@ -762,7 +765,7 @@ func (c *Client) getSyncedL1SnippetFromAnchor(
 ) {
 	method, err := encoding.TaikoL2ABI.MethodById(tx.Data())
 	if err != nil {
-		return common.Hash{}, 0, 0, err
+		return common.Hash{}, 0, 0, fmt.Errorf("failed to get TaikoL2.Anchor method by ID: %w", err)
 	}
 
 	var ok bool
@@ -799,7 +802,7 @@ func (c *Client) getSyncedL1SnippetFromAnchor(
 		args := map[string]interface{}{}
 
 		if err := method.Inputs.UnpackIntoMap(args, tx.Data()[4:]); err != nil {
-			return common.Hash{}, 0, 0, err
+			return common.Hash{}, 0, 0, fmt.Errorf("failed to unpack anchor transaction calldata: %w", err)
 		}
 
 		l1Height, ok = args["_anchorBlockId"].(uint64)

@@ -470,7 +470,7 @@ func (s *DriverTestSuite) TestInsertSoftBlocksAfterEOB() {
 	headL1Origin, err := s.RPCClient.L2.HeadL1Origin(context.Background())
 	s.Nil(err)
 
-	for range headL1Origin.BlockID.Uint64() + epochs + 1 {
+	for i := uint64(0); i < headL1Origin.BlockID.Uint64()+epochs+1; i++ {
 		s.ProposeAndInsertEmptyBlocks(s.p, s.d.ChainSyncer().BlobSyncer())
 	}
 
@@ -480,7 +480,7 @@ func (s *DriverTestSuite) TestInsertSoftBlocksAfterEOB() {
 	l2Head, err := s.d.rpc.L2.HeaderByNumber(context.Background(), nil)
 	s.Nil(err)
 
-	for i := range epochs {
+	for i := uint64(0); i < epochs; i++ {
 		s.True(s.insertSoftBlock(url, l1Head, l2Head.Number.Uint64()+1+i, 0, false, false).IsSuccess())
 		s.True(s.insertSoftBlock(url, l1Head, l2Head.Number.Uint64()+1+i, 1, true, false).IsSuccess())
 		s.False(s.insertSoftBlock(url, l1Head, l2Head.Number.Uint64()+1+i, 0, true, false).IsSuccess())
@@ -537,7 +537,7 @@ func (s *DriverTestSuite) TestInsertSoftBlocksAfterEOP() {
 	headL1Origin, err := s.RPCClient.L2.HeadL1Origin(context.Background())
 	s.Nil(err)
 
-	for range headL1Origin.BlockID.Uint64() + epochs + 1 {
+	for i := uint64(0); i < headL1Origin.BlockID.Uint64()+epochs+1; i++ {
 		s.ProposeAndInsertEmptyBlocks(s.p, s.d.ChainSyncer().BlobSyncer())
 	}
 
@@ -547,7 +547,7 @@ func (s *DriverTestSuite) TestInsertSoftBlocksAfterEOP() {
 	l2Head, err := s.d.rpc.L2.HeaderByNumber(context.Background(), nil)
 	s.Nil(err)
 
-	for i := range epochs {
+	for i := uint64(0); i < epochs; i++ {
 		s.True(s.insertSoftBlock(url, l1Head, l2Head.Number.Uint64()+1, i, false, false).IsSuccess())
 
 		latestSafeBlock, err := s.RPCClient.L2.HeaderByNumber(context.Background(), big.NewInt(-4))
