@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/big"
 	"net/url"
+	"sync"
 	"time"
 
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/bindings"
@@ -18,7 +19,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rlp"
 
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/bindings/encoding"
@@ -49,6 +49,7 @@ type Syncer struct {
 	reorgDetectedFlag   bool
 	maxRetrieveExponent uint64
 	blobDatasource      *rpc.BlobDataSource
+	mutex               sync.Mutex
 }
 
 // NewSyncer creates a new syncer instance.
@@ -90,6 +91,8 @@ func NewSyncer(
 // ProcessL1Blocks fetches all `TaikoL1.BlockProposed` events between given
 // L1 block heights, and then tries inserting them into L2 execution engine's blockchain.
 func (s *Syncer) ProcessL1Blocks(ctx context.Context) error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	for {
 		if err := s.processL1Blocks(ctx); err != nil {
 			return err
@@ -257,23 +260,17 @@ func (s *Syncer) onBlockProposed(
 		return fmt.Errorf("failed to fetch tx list: %w", err)
 	}
 
-	var decompressedTxListBytes []byte
-	if s.rpc.L2.ChainID.Cmp(params.HeklaNetworkID) == 0 {
-		decompressedTxListBytes = s.txListDecompressor.TryDecompressHekla(
-			meta.GetBlockID(),
-			txListBytes,
-			meta.GetBlobUsed(),
-		)
-	} else {
-		decompressedTxListBytes = s.txListDecompressor.TryDecompress(meta.GetBlockID(), txListBytes, meta.GetBlobUsed())
-	}
-
 	// Decompress the transactions list and try to insert a new head block to L2 EE.
 	payloadData, err := s.insertNewHead(
 		ctx,
 		meta,
 		parent,
-		decompressedTxListBytes,
+		s.txListDecompressor.TryDecompress(
+			s.rpc.L2.ChainID,
+			meta.GetBlockID(),
+			txListBytes,
+			meta.GetBlobUsed(),
+		),
 		&rawdb.L1Origin{
 			BlockID:       meta.GetBlockID(),
 			L2BlockHash:   common.Hash{}, // Will be set by taiko-geth.
@@ -409,10 +406,30 @@ func (s *Syncer) insertNewHead(
 		return nil, fmt.Errorf("failed to create execution payloads: %w", err)
 	}
 
+	var lastVerifiedBlockHash common.Hash
+	if lastVerifiedBlockHash, err = s.rpc.GetLastVerifiedBlockHash(ctx); err != nil {
+		log.Debug("Failed to fetch last verified block hash", "error", err)
+
+		stateVars, err := s.rpc.GetProtocolStateVariables(&bind.CallOpts{Context: ctx})
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch protocol state variables: %w", err)
+		}
+
+		lastVerifiedBlockHeader, err := s.rpc.L2.HeaderByNumber(
+			ctx,
+			new(big.Int).SetUint64(stateVars.B.LastVerifiedBlockId),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch last verified block: %w", err)
+		}
+
+		lastVerifiedBlockHash = lastVerifiedBlockHeader.Hash()
+	}
+
 	fc := &engine.ForkchoiceStateV1{
 		HeadBlockHash:      payload.BlockHash,
 		SafeBlockHash:      payload.BlockHash,
-		FinalizedBlockHash: payload.BlockHash,
+		FinalizedBlockHash: lastVerifiedBlockHash,
 	}
 
 	// Update the fork choice
@@ -467,7 +484,7 @@ func (s *Syncer) createExecutionPayloads(
 		"timestamp", attributes.BlockMetadata.Timestamp,
 		"mixHash", attributes.BlockMetadata.MixHash,
 		"baseFee", utils.WeiToGWei(attributes.BaseFeePerGas),
-		"extraData", string(attributes.BlockMetadata.ExtraData),
+		"extraData", common.Bytes2Hex(attributes.BlockMetadata.ExtraData),
 		"l1OriginHeight", attributes.L1Origin.L1BlockHeight,
 		"l1OriginHash", attributes.L1Origin.L1BlockHash,
 	)
