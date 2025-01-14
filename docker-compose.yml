@@ -25,6 +25,14 @@ services:
       - host/jwt.txt
       - --l2.auth
       - "${L2_AUTH}"
+      - --softBlock.port
+      - "${SOFT_BLOCK_SERVER_PORT}"
+      - --softBlock.jwtSecret
+      - "${SOFT_BLOCK_SERVER_JWT_SECRET}"
+      - --softBlock.corsOrigins
+      - "${SOFT_BLOCK_SERVER_CORS_ORIGINS}"
+      - --softBlock.signatureCheck
+      - "${SOFT_BLOCK_SERVER_SIGNATURE_CHECK}"
       - --verbosity
       - "4"
     extra_hosts:
