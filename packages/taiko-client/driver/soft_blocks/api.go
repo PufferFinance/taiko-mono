@@ -66,6 +66,8 @@ func (b *TransactionBatch) ValidateSignature() (bool, error) {
 		return false, err
 	}
 
+	log.Info("Validate signature addresses", "expected",  b.BlockParams.Coinbase.Hex(), "actual", crypto.PubkeyToAddress(*pubKey).Hex())
+
 	return crypto.PubkeyToAddress(*pubKey).Hex() == b.BlockParams.Coinbase.Hex(), nil
 }
 
@@ -143,6 +145,7 @@ func (s *SoftBlockAPIServer) BuildSoftBlock(c echo.Context) error {
 	if s.checkSig {
 		ok, err := reqBody.TransactionBatch.ValidateSignature()
 		if err != nil {
+			log.Warn("Failed to validate signature", "err", err)
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		}
 		if !ok {
@@ -158,6 +161,7 @@ func (s *SoftBlockAPIServer) BuildSoftBlock(c echo.Context) error {
 	// Check if the L2 execution engine is syncing from L1.
 	progress, err := s.rpc.L2ExecutionEngineSyncProgress(c.Request().Context())
 	if err != nil {
+		log.Warn("Failed to get L2EE progress", "err", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 	if progress.IsSyncing() {
@@ -170,6 +174,7 @@ func (s *SoftBlockAPIServer) BuildSoftBlock(c echo.Context) error {
 		new(big.Int).SetUint64(reqBody.TransactionBatch.BlockID),
 	)
 	if err != nil && err.Error() != ethereum.NotFound.Error() {
+		log.Warn("Failed to find l1 origin", "err", err
 		return s.returnError(c, http.StatusInternalServerError, err)
 	}
 	if l1Origin != nil {
@@ -200,6 +205,7 @@ func (s *SoftBlockAPIServer) BuildSoftBlock(c echo.Context) error {
 		reqBody.TransactionBatch.BlockParams,
 	)
 	if err != nil {
+		log.Warn("Failed to insert softblock from tx batch", "err", err)
 		return s.returnError(c, http.StatusInternalServerError, err)
 	}
 

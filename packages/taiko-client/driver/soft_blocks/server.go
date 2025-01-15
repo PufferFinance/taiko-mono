@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/log"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -58,6 +59,8 @@ func New(
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch protocol configs: %w", err)
 	}
+
+	log.Info("Initializing soft block server", "checkSig", checkSig)
 
 	server := &SoftBlockAPIServer{
 		echo:        echo.New(),
