@@ -1046,8 +1046,8 @@ github.com/prysmaticlabs/protoc-gen-go-cast v0.0.0-20230228205207-28762a7b9294 h
 github.com/prysmaticlabs/protoc-gen-go-cast v0.0.0-20230228205207-28762a7b9294/go.mod h1:ZVEbRdnMkGhp/pu35zq4SXxtvUwWK0J1MATtekZpH2Y=
 github.com/prysmaticlabs/prysm/v4 v4.2.0 h1:87QoRT3Azs7c1Y6SnIq0+CNtQRbAt0sVKGj2OxRT1Rw=
 github.com/prysmaticlabs/prysm/v4 v4.2.0/go.mod h1:PQrQtHJeeqTz4K3udN/EX1Gs2xhWR4j93gSj0OQZ1f4=
-github.com/pufferfinance/unifi-geth v0.0.0-20250113133216-1db62d170195 h1:84PXn1R7uIE1/ZsHKpa5P/+6H/BrXrzQWDeyIzJPFjI=
-github.com/pufferfinance/unifi-geth v0.0.0-20250113133216-1db62d170195/go.mod h1:nqByouVW0a0qx5KKgvYgoXba+pYEHznAAQp6LhZilgM=
+github.com/pufferfinance/unifi-geth v0.0.0-20250115124835-f9a45115a840 h1:tHk3IjBRiv3M1KNWcoMD9q1cF4O5c8VcB4v0DDCSKtM=
+github.com/pufferfinance/unifi-geth v0.0.0-20250115124835-f9a45115a840/go.mod h1:nqByouVW0a0qx5KKgvYgoXba+pYEHznAAQp6LhZilgM=
 github.com/quic-go/qpack v0.4.0 h1:Cr9BXA1sQS2SmDUWjSofMPNKmvF6IiIfDRmgU0w1ZCo=
 github.com/quic-go/qpack v0.4.0/go.mod h1:UZVnYIfi5GRk+zI9UMaCPsmZ2xKJP7XBUvVyT1Knj9A=
 github.com/quic-go/quic-go v0.44.0 h1:So5wOr7jyO4vzL2sd8/pD9Kesciv91zSk8BoFngItQ0=

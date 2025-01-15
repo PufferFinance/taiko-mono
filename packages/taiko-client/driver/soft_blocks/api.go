@@ -1,6 +1,7 @@
 package softblocks
 
 import (
+	"encoding/hex"
 	"errors"
 	"math/big"
 	"net/http"
@@ -122,6 +123,7 @@ func (s *SoftBlockAPIServer) BuildSoftBlock(c echo.Context) error {
 		"coinbase", reqBody.TransactionBatch.BlockParams.Coinbase,
 		"anchorBlockID", reqBody.TransactionBatch.BlockParams.AnchorBlockID,
 		"anchorStateRoot", reqBody.TransactionBatch.BlockParams.AnchorStateRoot,
+		"transactionsList", hex.EncodeToString(reqBody.TransactionBatch.TransactionsList),
 	)
 
 	// Request body validation.

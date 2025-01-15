@@ -335,7 +335,7 @@ exclude (
 	github.com/ethereum/go-ethereum v1.14.7
 )
 
-replace github.com/ethereum/go-ethereum v1.13.15 => github.com/pufferfinance/unifi-geth v0.0.0-20250113133216-1db62d170195
+replace github.com/ethereum/go-ethereum v1.13.15 => github.com/pufferfinance/unifi-geth v0.0.0-20250115124835-f9a45115a840
 
 replace github.com/ethereum-optimism/optimism v1.7.4 => github.com/taikoxyz/optimism v0.0.0-20240627102435-4845247ff00c
 

@@ -189,6 +189,8 @@ func (s *Syncer) InsertSoftBlockFromTransactionsBatch(
 		"baseFee", utils.WeiToGWei(attributes.BaseFeePerGas),
 		"extraData", common.Bytes2Hex(attributes.BlockMetadata.ExtraData),
 		"transactions", len(txList),
+		"l1Origin.blockID", attributes.L1Origin.BlockID,
+		"l1Origin.batchID", attributes.L1Origin.BatchID,
 	)
 
 	// Step 1, prepare a payload
