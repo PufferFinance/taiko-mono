@@ -7,6 +7,8 @@ services:
       dockerfile: ./packages/taiko-client/Dockerfile
     restart: unless-stopped
     pull_policy: always
+    ports:
+      - "8090:8090"
     volumes:
       - ./host:/host
     command:

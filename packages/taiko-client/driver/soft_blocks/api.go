@@ -66,7 +66,7 @@ func (b *TransactionBatch) ValidateSignature() (bool, error) {
 		return false, err
 	}
 
-	log.Info("Validate signature addresses", "expected",  b.BlockParams.Coinbase.Hex(), "actual", crypto.PubkeyToAddress(*pubKey).Hex())
+	log.Info("Validate signature addresses", "expected", b.BlockParams.Coinbase.Hex(), "actual", crypto.PubkeyToAddress(*pubKey).Hex())
 
 	return crypto.PubkeyToAddress(*pubKey).Hex() == b.BlockParams.Coinbase.Hex(), nil
 }
@@ -174,7 +174,7 @@ func (s *SoftBlockAPIServer) BuildSoftBlock(c echo.Context) error {
 		new(big.Int).SetUint64(reqBody.TransactionBatch.BlockID),
 	)
 	if err != nil && err.Error() != ethereum.NotFound.Error() {
-		log.Warn("Failed to find l1 origin", "err", err
+		log.Warn("Failed to find l1 origin", "err", err)
 		return s.returnError(c, http.StatusInternalServerError, err)
 	}
 	if l1Origin != nil {
