@@ -5,6 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"math/big"
+	"net/http"
+	"time"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/log"
@@ -12,10 +17,6 @@ import (
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/bindings/metadata"
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/internal/metrics"
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/pkg/rpc"
-	"io"
-	"math/big"
-	"net/http"
-	"time"
 )
 
 const (
@@ -86,6 +87,16 @@ func (t *TDXProofProducer) RequestProof(
 		Opts:    opts,
 		Tier:    t.Tier(),
 	}, nil
+}
+
+// Aggregate implements the ProofProducer interface to aggregate a batch of proofs.
+func (t *TDXProofProducer) Aggregate(
+	ctx context.Context,
+	items []*ProofWithHeader,
+	requestAt time.Time,
+) (*BatchProofs, error) {
+	//TODO: Implement TDX proof aggregation
+	return nil, nil
 }
 
 func (t *TDXProofProducer) callProver(
