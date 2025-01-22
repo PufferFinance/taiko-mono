@@ -33,9 +33,8 @@ contracts_layer1=(
 "contracts/layer1/automata-attestation/AttestationVerifier.sol:AttestationVerifier"
 "contracts/layer1/automata-attestation/AutomataDcapV3Attestation.sol:AutomataDcapV3Attestation"
 "contracts/layer1/based/TaikoL1.sol:TaikoL1"
-"contracts/layer1/tiers/TierProviderV2.sol:TierProviderV2"
 "contracts/layer1/hekla/HeklaTaikoL1.sol:HeklaTaikoL1"
-"contracts/layer1/hekla/HeklaTierProvider.sol:HeklaTierProvider"
+"contracts/layer1/hekla/HeklaTierRouter.sol:HeklaTierRouter"
 "contracts/layer1/mainnet/multirollup/MainnetBridge.sol:MainnetBridge"
 "contracts/layer1/mainnet/multirollup/MainnetSignalService.sol:MainnetSignalService"
 "contracts/layer1/mainnet/multirollup/MainnetERC20Vault.sol:MainnetERC20Vault"
@@ -59,6 +58,7 @@ contracts_layer1=(
 "contracts/layer1/team/tokenunlock/TokenUnlock.sol:TokenUnlock"
 "contracts/layer1/provers/ProverSet.sol:ProverSet"
 "contracts/layer1/provers/GuardianProver.sol:GuardianProver"
+"contracts/layer1/fork/ForkManager.sol:ForkManager"
 )
 
 # Layer 2 contracts

@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20SnapshotUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
-import "../../shared/common/EssentialContract.sol";
+import "src/shared/common/EssentialContract.sol";
 
 /// @title HeklaTaikoToken
 /// @notice Taiko token for Taiko Hekla testnet.
@@ -81,6 +81,16 @@ contract HeklaTaikoToken is EssentialContract, ERC20SnapshotUpgradeable, ERC20Vo
     {
         if (_to == address(this)) revert TKO_INVALID_ADDR();
         return super.transferFrom(_from, _to, _amount);
+    }
+
+    function clock() public view override returns (uint48) {
+        return SafeCastUpgradeable.toUint48(block.timestamp);
+    }
+
+    // solhint-disable-next-line func-name-mixedcase
+    function CLOCK_MODE() public pure override returns (string memory) {
+        // See https://eips.ethereum.org/EIPS/eip-6372
+        return "mode=timestamp";
     }
 
     function name() public pure override returns (string memory) {

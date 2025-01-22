@@ -76,7 +76,7 @@ var (
 		MaxBlocksToVerify:     16,
 		BlockMaxGasLimit:      240_000_000,
 		LivenessBond:          livenessBond,
-		StateRootSyncInternal: 16,
+		StateRootSyncInternal: 4,
 		MaxAnchorHeightOffset: 64,
 		BaseFeeConfig: bindings.LibSharedDataBaseFeeConfig{
 			AdjustmentQuotient:     8,
@@ -85,7 +85,7 @@ var (
 			MinGasExcess:           1_340_000_000,
 			MaxGasIssuancePerBlock: 600_000_000,
 		},
-		OntakeForkHeight: 2,
+		OntakeForkHeight: 0,
 	}
 	UniFiTestnetProtocolConfig = &bindings.TaikoDataConfig{
 		ChainId:               UniFiTestnetChainId,

@@ -1,5 +1,109 @@
 # Changelog
 
+## [0.40.0](https://github.com/taikoxyz/taiko-mono/compare/taiko-client-v0.39.2...taiko-client-v0.40.0) (2024-12-23)
+
+
+### Features
+
+* **protocol:** propose a batch blocks conditionally ([#18570](https://github.com/taikoxyz/taiko-mono/issues/18570)) ([e846f62](https://github.com/taikoxyz/taiko-mono/commit/e846f6289fea0b046ddcfcdfaf46f3727efbdf11))
+* **taiko-client:** add chain ID to `TryDecompress()` ([#18444](https://github.com/taikoxyz/taiko-mono/issues/18444)) ([10d99d5](https://github.com/taikoxyz/taiko-mono/commit/10d99d50d3866a6e233d9e3749ea5eb753335815))
+* **taiko-client:** client changes based on [#18150](https://github.com/taikoxyz/taiko-mono/issues/18150) ([#18350](https://github.com/taikoxyz/taiko-mono/issues/18350)) ([ddc6473](https://github.com/taikoxyz/taiko-mono/commit/ddc647327e8d58f5a2def5b902ad06800982544b))
+* **taiko-client:** compatible changes for `lastProposedIn` ([#18442](https://github.com/taikoxyz/taiko-mono/issues/18442)) ([28f32a7](https://github.com/taikoxyz/taiko-mono/commit/28f32a790cc680ecb3e6345221e4183af4f34b2e))
+* **taiko-client:** enable proof aggregation (batch proofs) ([#18163](https://github.com/taikoxyz/taiko-mono/issues/18163)) ([7642961](https://github.com/taikoxyz/taiko-mono/commit/7642961a9031840183f4d00d0a4c19fdb8a68058))
+* **taiko-client:** improve `ProofBuffer` ([#18627](https://github.com/taikoxyz/taiko-mono/issues/18627)) ([c386589](https://github.com/taikoxyz/taiko-mono/commit/c3865896523712afa108be810e75b511e7ecc0c4))
+* **taiko-client:** make p2p-sync required ([#18571](https://github.com/taikoxyz/taiko-mono/issues/18571)) ([de92b28](https://github.com/taikoxyz/taiko-mono/commit/de92b28c03b747845a8a1aa26991307d1ed47fd0))
+* **taiko-client:** revert pr 18442 ([#18450](https://github.com/taikoxyz/taiko-mono/issues/18450)) ([0706f0a](https://github.com/taikoxyz/taiko-mono/commit/0706f0aee9c318d8de298f98480a46de6337937c))
+* **taiko-client:** update Go contract bindings ([#18381](https://github.com/taikoxyz/taiko-mono/issues/18381)) ([71cfc5c](https://github.com/taikoxyz/taiko-mono/commit/71cfc5ce1ef06dcf099a4ce9b22bea6100406148))
+* **taiko-client:** update Go contract bindings ([#18384](https://github.com/taikoxyz/taiko-mono/issues/18384)) ([8dd14a1](https://github.com/taikoxyz/taiko-mono/commit/8dd14a1b4b21ce77ed3aac935b1d2c950e11e729))
+* **taiko-client:** update Go contract bindings ([#18462](https://github.com/taikoxyz/taiko-mono/issues/18462)) ([bc0ee99](https://github.com/taikoxyz/taiko-mono/commit/bc0ee9952234cc6722d3a0e9d9ebd92bca706999))
+
+
+### Bug Fixes
+
+* **taiko-client:** valid status check in `BatchGetBlocksProofStatus` ([#18595](https://github.com/taikoxyz/taiko-mono/issues/18595)) ([ec5f599](https://github.com/taikoxyz/taiko-mono/commit/ec5f5999750f70efe58cc061c5856250dcef5ce2))
+
+
+### Chores
+
+* **taiko-client:** add `BaseFeeConfig.SharingPctg` to mainnet protocol config ([#18341](https://github.com/taikoxyz/taiko-mono/issues/18341)) ([75d14a7](https://github.com/taikoxyz/taiko-mono/commit/75d14a7afac83b4578a3c32456a28ae70373d5cb))
+* **taiko-client:** update CI badge and path ([#18441](https://github.com/taikoxyz/taiko-mono/issues/18441)) ([6aef03e](https://github.com/taikoxyz/taiko-mono/commit/6aef03e87eaf3cdbfb7637bd6122525f75c611f0))
+* **taiko-client:** update docker-compose config ([#18330](https://github.com/taikoxyz/taiko-mono/issues/18330)) ([74e4ca4](https://github.com/taikoxyz/taiko-mono/commit/74e4ca4aaef07af4958a7b61c95e385022b1cf3c))
+* **taiko-client:** update Go contract bindings generation script ([#18324](https://github.com/taikoxyz/taiko-mono/issues/18324)) ([4f698a0](https://github.com/taikoxyz/taiko-mono/commit/4f698a02bb1714caf527629a637323a9964cdb11))
+
+
+### Code Refactoring
+
+* **taiko-client:** move `utils` package from `internal/` to `pkg/`  ([#18516](https://github.com/taikoxyz/taiko-mono/issues/18516)) ([b674857](https://github.com/taikoxyz/taiko-mono/commit/b67485732832fb90849179a7a8c8093f2228eb5a))
+
+
+### Tests
+
+* **taiko-client:** fix some lint issues for `taiko-client` ([#18517](https://github.com/taikoxyz/taiko-mono/issues/18517)) ([ac7eba6](https://github.com/taikoxyz/taiko-mono/commit/ac7eba69bfe13f026bc6e08074ebaec5dcb067eb))
+* **taiko-client:** introduce TestTxPoolContentWithMinTip test case ([#18285](https://github.com/taikoxyz/taiko-mono/issues/18285)) ([d572f4c](https://github.com/taikoxyz/taiko-mono/commit/d572f4c412e59094ea9a4c5ff0b0667c9c04bd66))
+* **taiko-client:** skip `TestCheckL1ReorgToSameHeightFork` temporarily ([#18522](https://github.com/taikoxyz/taiko-mono/issues/18522)) ([385fed2](https://github.com/taikoxyz/taiko-mono/commit/385fed2ce273d131635c54e99a11704a4ed385b8))
+
+
+### Workflow
+
+* **protocol:** trigger patch release (1.10.1) ([#18358](https://github.com/taikoxyz/taiko-mono/issues/18358)) ([f4f4796](https://github.com/taikoxyz/taiko-mono/commit/f4f4796488059b02c79d6fb15170df58dd31dc4e))
+* **repo:** change to trigger hive test manually ([#18514](https://github.com/taikoxyz/taiko-mono/issues/18514)) ([63dec66](https://github.com/taikoxyz/taiko-mono/commit/63dec6695b3e330ba7bd69857743741d7608e2a4))
+* **repo:** update go mod and use random port ([#18515](https://github.com/taikoxyz/taiko-mono/issues/18515)) ([3c2e943](https://github.com/taikoxyz/taiko-mono/commit/3c2e943ab2d6ff636ad69dc7e93df34d8f549c4d))
+
+
+### Build
+
+* **deps:** bump github.com/stretchr/testify from 1.9.0 to 1.10.0 ([#18539](https://github.com/taikoxyz/taiko-mono/issues/18539)) ([79f3fab](https://github.com/taikoxyz/taiko-mono/commit/79f3fab5f1d1ec1bb4ee18afb9268b622e894780))
+* **deps:** bump golang.org/x/sync from 0.9.0 to 0.10.0 ([#18560](https://github.com/taikoxyz/taiko-mono/issues/18560)) ([3d51970](https://github.com/taikoxyz/taiko-mono/commit/3d51970aa0953bbfecaeebf76ea7e664c875c0e4))
+
+## [0.39.2](https://github.com/taikoxyz/taiko-mono/compare/taiko-client-v0.39.1...taiko-client-v0.39.2) (2024-10-24)
+
+
+### Bug Fixes
+
+* **protocol:** fix issue in mainnet deployment script ([#18283](https://github.com/taikoxyz/taiko-mono/issues/18283)) ([5c371a1](https://github.com/taikoxyz/taiko-mono/commit/5c371a181af444999f611e03774ec096ffbd1226))
+* **taiko-client:** fix path parsing in `/eth/v1/config/spec` ([#18295](https://github.com/taikoxyz/taiko-mono/issues/18295)) ([6633c80](https://github.com/taikoxyz/taiko-mono/commit/6633c80fbcabb6f06ce5467501da4207bc84be84))
+
+## [0.39.1](https://github.com/taikoxyz/taiko-mono/compare/taiko-client-v0.39.0...taiko-client-v0.39.1) (2024-10-22)
+
+
+### Bug Fixes
+
+* **taiko-client:** fix `lastVerifiedBlockHash` fetch ([#18277](https://github.com/taikoxyz/taiko-mono/issues/18277)) ([8512f45](https://github.com/taikoxyz/taiko-mono/commit/8512f456f033130ecb0e5493a3c36be025908228))
+
+## [0.39.0](https://github.com/taikoxyz/taiko-mono/compare/taiko-client-v0.38.0...taiko-client-v0.39.0) (2024-10-21)
+
+
+### Features
+
+* **taiko-client:** update `OntakeForkHeight` in mainnet ([#18253](https://github.com/taikoxyz/taiko-mono/issues/18253)) ([21c6235](https://github.com/taikoxyz/taiko-mono/commit/21c62355575adae6d99e1a117f357c6429d79b4c))
+
+
+### Documentation
+
+* **taiko-client:** update readme how to do integration test ([#18256](https://github.com/taikoxyz/taiko-mono/issues/18256)) ([b12b32e](https://github.com/taikoxyz/taiko-mono/commit/b12b32e92b5803f15047a6da2b73135f12b9406d))
+
+
+### Tests
+
+* **taiko-client:** introduce `taiko-reth` as another L2 node in testing ([#18223](https://github.com/taikoxyz/taiko-mono/issues/18223)) ([e856273](https://github.com/taikoxyz/taiko-mono/commit/e85627365d423fd8353b5bff92e80978774e9c50))
+
+## [0.38.0](https://github.com/taikoxyz/taiko-mono/compare/taiko-client-v0.37.0...taiko-client-v0.38.0) (2024-10-09)
+
+
+### Features
+
+* **taiko-client:** add `proposer_pool_content_fetch_time` metric ([#18190](https://github.com/taikoxyz/taiko-mono/issues/18190)) ([35579df](https://github.com/taikoxyz/taiko-mono/commit/35579dfa938562969da2395492f4472c300574dd))
+
+
+### Chores
+
+* **taiko-client:** bump dependencies ([#18202](https://github.com/taikoxyz/taiko-mono/issues/18202)) ([219a7e8](https://github.com/taikoxyz/taiko-mono/commit/219a7e87c09c7e4ac8d545c65c77a29e6f818701))
+
+
+### Tests
+
+* **taiko-client:** remove an unnecessary test ([#18218](https://github.com/taikoxyz/taiko-mono/issues/18218)) ([d624e29](https://github.com/taikoxyz/taiko-mono/commit/d624e29ce1c0ae9ef6704d96516d632600213e13))
+
 ## [0.37.0](https://github.com/taikoxyz/taiko-mono/compare/taiko-client-v0.36.0...taiko-client-v0.37.0) (2024-09-28)
 
 

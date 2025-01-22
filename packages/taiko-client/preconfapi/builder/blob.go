@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/bindings/encoding"
-	"github.com/taikoxyz/taiko-mono/packages/taiko-client/internal/utils"
+	"github.com/taikoxyz/taiko-mono/packages/taiko-client/pkg/utils"
 )
 
 // BlobTransactionBuilder is responsible for building a TaikoL1.proposeBlock transaction with txList

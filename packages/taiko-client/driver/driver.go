@@ -15,7 +15,6 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/urfave/cli/v2"
 
-	"github.com/taikoxyz/taiko-mono/packages/taiko-client/bindings/encoding"
 	chainSyncer "github.com/taikoxyz/taiko-mono/packages/taiko-client/driver/chain_syncer"
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/driver/state"
 	"github.com/taikoxyz/taiko-mono/packages/taiko-client/pkg/rpc"
@@ -70,7 +69,7 @@ func (d *Driver) InitFromConfig(ctx context.Context, cfg *Config) (err error) {
 		return err
 	}
 
-	if cfg.P2PSync && peers == 0 {
+	if peers == 0 {
 		log.Warn("P2P syncing verified blocks enabled, but no connected peer found in L2 execution engine")
 	}
 
@@ -78,7 +77,6 @@ func (d *Driver) InitFromConfig(ctx context.Context, cfg *Config) (err error) {
 		d.ctx,
 		d.rpc,
 		d.state,
-		cfg.P2PSync,
 		cfg.P2PSyncTimeout,
 		cfg.MaxExponent,
 		cfg.BlobServerEndpoint,
@@ -174,9 +172,15 @@ func (d *Driver) ChainSyncer() *chainSyncer.L2ChainSyncer {
 
 // reportProtocolStatus reports some protocol status intervally.
 func (d *Driver) reportProtocolStatus() {
+	protocolConfigs, err := rpc.GetProtocolConfigs(d.rpc.TaikoL1, &bind.CallOpts{Context: d.ctx})
+	if err != nil {
+		log.Error("Failed to get protocol configs", "error", err)
+		return
+	}
+
 	var (
 		ticker       = time.NewTicker(protocolStatusReportInterval)
-		maxNumBlocks = encoding.GetProtocolConfig(d.rpc.L2.ChainID.Uint64()).BlockMaxProposals
+		maxNumBlocks = protocolConfigs.BlockMaxProposals
 	)
 	d.wg.Add(1)
 
