@@ -40,8 +40,9 @@ contract L1EnableBridge is Script {
             addressManager.setAddress(167_200, LibStrings.B_BRIDGE, l2Bridge);
         }
 
-        address l2SignalService = addressManager.getAddress(167_200, LibStrings.B_SIGNAL_SERVICE);
-        if (l2SignalService == address(0)) {
+        address l2SignalServiceSet = addressManager.getAddress(167_200, LibStrings.B_SIGNAL_SERVICE);
+        console2.log(address(l2SignalServiceSet));
+        if (l2SignalServiceSet == address(0)) {
             addressManager.setAddress(167_200, LibStrings.B_SIGNAL_SERVICE, l2SignalService); // L2 signal service
         }
         console2.log(addressManager.getAddress(167_200, LibStrings.B_SIGNAL_SERVICE));
