@@ -306,7 +306,7 @@ contract DeployProtocolOnL1 is DeployCapability {
         } else if (keccak256(abi.encode(vm.envString("TIER_ROUTER"))) == keccak256(abi.encode("testnet"))) {
             taikoL1 = TaikoL1(address(new TestnetUniFiL1()));
         } else {
-            taikoL1 = TaikoL1(address(new TaikoL1()));
+            taikoL1 = TaikoL1(address(new DevnetTaikoL1()));
         }
 
         deployProxy({
