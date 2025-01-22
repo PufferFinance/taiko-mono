@@ -17,41 +17,26 @@ contract TestnetTierProvider is ITierProvider, ITierRouter {
     }
 
     /// @inheritdoc ITierProvider
+
     function getTier(uint16 _tierId) public pure override returns (ITierProvider.Tier memory) {
-        if (_tierId == LibTiers.TIER_TDX) {
-            return ITierProvider.Tier({
-                verifierName: LibStrings.B_TIER_TDX,
-                validityBond: 250 ether, // TKO
-                contestBond: 1640 ether, // =250TKO * 6.5625
-                cooldownWindow: 1, // 1 minute
-                provingWindow: 60, // 1 hours
-                maxBlocksToVerifyPerProof: 0
-            });
-        }
-
-        if (_tierId == LibTiers.TIER_GUARDIAN) {
-            return ITierProvider.Tier({
-                verifierName: LibStrings.B_TIER_GUARDIAN,
-                validityBond: 0, // must be 0 for top tier
-                contestBond: 0, // must be 0 for top tier
-                cooldownWindow: 1, //1 minute
-                provingWindow: 2880, // 48 hours
-                maxBlocksToVerifyPerProof: 0
-            });
-        }
-
-        revert TIER_NOT_FOUND();
+        return ITierProvider.Tier({
+            verifierName: "",
+            validityBond: 250 ether, // TKO
+            contestBond: 500 ether, // TKO
+            cooldownWindow: 1, //1 minute
+            provingWindow: 30, // 0.5 hours
+            maxBlocksToVerifyPerProof: 0
+        });
     }
 
     /// @inheritdoc ITierProvider
     function getTierIds() public pure override returns (uint16[] memory tiers_) {
-        tiers_ = new uint16[](3);
-        tiers_[0] = LibTiers.TIER_TDX;
-        tiers_[1] = LibTiers.TIER_GUARDIAN;
+        tiers_ = new uint16[](1);
+        tiers_[0] = LibTiers.TIER_OPTIMISTIC;
     }
 
     /// @inheritdoc ITierProvider
     function getMinTier(address, uint256 _rand) public pure override returns (uint16) {
-        return LibTiers.TIER_TDX;
+        return LibTiers.TIER_OPTIMISTIC;
     }
 }
