@@ -9,7 +9,6 @@ import "../../contracts/shared/common/LibStrings.sol";
 import "../../contracts/shared/bridge/Bridge.sol";
 import "../../contracts/shared/signal/SignalService.sol";
 import "../../contracts/layer1/based/TaikoL1.sol";
-import "../../contracts/layer1/devnet/DevnetTierProvider.sol";
 import "../../contracts/layer1/provers/GuardianProver.sol";
 import "../../contracts/layer1/provers/ProverSet.sol";
 import "../../contracts/layer1/token/TaikoToken.sol";
