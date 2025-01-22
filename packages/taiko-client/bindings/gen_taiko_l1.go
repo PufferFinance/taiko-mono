@@ -143,14 +143,6 @@ type TaikoDataSlotB struct {
 	LastUnpausedAt      uint64
 }
 
-// TaikoDataTransition is an auto generated low-level Go binding around an user-defined struct.
-type TaikoDataTransition struct {
-	ParentHash [32]byte
-	BlockHash  [32]byte
-	StateRoot  [32]byte
-	Graffiti   [32]byte
-}
-
 // TaikoDataTransitionState is an auto generated low-level Go binding around an user-defined struct.
 type TaikoDataTransitionState struct {
 	Key          [32]byte
