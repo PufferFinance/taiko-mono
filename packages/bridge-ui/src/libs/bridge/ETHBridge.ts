@@ -45,7 +45,8 @@ export class ETHBridge extends Bridge {
       log('Gas limit is set to 0');
       gasLimit = 0;
     } else {
-      const minGasLimit = await bridgeContract.read.getMessageMinGasLimit([0n]);
+      // const minGasLimit = await bridgeContract.read.getMessageMinGasLimit([0n]);
+      const minGasLimit = 806_656;
       log('Min gas limit for message', minGasLimit);
       gasLimit = minGasLimit + 1;
     }
