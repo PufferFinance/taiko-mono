@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ ! -d "../protocol/out" ]; then
-    echo "ABI not generated in protocol package yet. Please run npm install && npx hardhat compile in ../protocol"
+    echo "ABI not generated in protocol package yet. Please run pnpm install && pnpm compile in ../protocol"
     exit 1
 fi
 
@@ -12,7 +12,7 @@ names=("ERC1155Vault" "ERC721Vault" "ERC20Vault" "Bridge" "TaikoL2" "TaikoL1" "S
 for (( i = 0; i < ${#paths[@]}; ++i ));
 do
     lower=$(echo "${names[i]}" | tr '[:upper:]' '[:lower:]')
-    jq .abi ../protocol/out/${paths[i]}/${names[i]}.json > bindings/$lower/${names[i]}.json
+    jq .abi ../protocol/out/layer1/${paths[i]}/${names[i]}.json > bindings/$lower/${names[i]}.json
     abigen --abi bindings/$lower/${names[i]}.json \
     --pkg $lower \
     --type ${names[i]} \

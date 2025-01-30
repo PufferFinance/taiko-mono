@@ -1,7 +1,7 @@
 #/bin/sh
 
 if [ ! -d "../protocol/out" ]; then
-    echo "ABI not generated in protocol package yet. Please run npm install && npx hardhat compile in ../protocol"
+    echo "ABI not generated in protocol package yet. Please run pnpm install && pnpm compile in ../protocol"
     exit 1
 fi
 
@@ -11,7 +11,7 @@ names=("TaikoL1")
 
 for (( i = 0; i < ${#paths[@]}; ++i ));
 do
-    jq .abi ../protocol/out/${paths[i]}/${names[i]}.json > ${names[i]}.json
+    jq .abi ../protocol/out/layer1/${paths[i]}/${names[i]}.json > ${names[i]}.json
     lower=$(echo "${names[i]}" | tr '[:upper:]' '[:lower:]')
     abigen --abi ${names[i]}.json \
     --pkg $lower \

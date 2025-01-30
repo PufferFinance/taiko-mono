@@ -291,7 +291,7 @@ func (c *Client) CalculateBaseFee(
 			return nil, err
 		}
 	} else {
-		baseFeeInfo, err := c.TaikoL2.GetBasefee(
+		baseFeeInfo, _, err := c.TaikoL2.GetBasefee(
 			&bind.CallOpts{BlockNumber: l2Head.Number, Context: ctx},
 			anchorBlockID.Uint64(),
 			uint32(l2Head.GasUsed),
@@ -299,7 +299,7 @@ func (c *Client) CalculateBaseFee(
 		if err != nil {
 			return nil, err
 		}
-		baseFee = baseFeeInfo.Basefee
+		baseFee = baseFeeInfo
 	}
 
 	if err != nil {
@@ -341,7 +341,7 @@ func (c *Client) GetPoolContent(
 	if err != nil {
 		return nil, err
 	}
-	
+
 	baseFee, err := c.CalculateBaseFee(
 		ctx,
 		l2Head,
@@ -926,7 +926,7 @@ func (c *Client) calculateBaseFeeOntake(
 		}
 	}
 
-	baseFeeInfo, err := c.TaikoL2.CalculateBaseFee(
+	baseFeeInfo, _, err := c.TaikoL2.CalculateBaseFee(
 		&bind.CallOpts{BlockNumber: l2Head.Number, Context: ctx},
 		*baseFeeConfig,
 		currentTimestamp-l2Head.Time,
@@ -950,5 +950,5 @@ func (c *Client) calculateBaseFeeOntake(
 		}
 	}
 
-	return baseFeeInfo.Basefee, nil
+	return baseFeeInfo, nil
 }

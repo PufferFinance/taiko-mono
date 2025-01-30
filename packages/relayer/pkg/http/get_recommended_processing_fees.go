@@ -181,12 +181,12 @@ func (srv *Server) getDestChainBaseFee(ctx context.Context, destLayer layer, cha
 			return nil, err
 		}
 
-		bf, err := srv.taikoL2.GetBasefee(&bind.CallOpts{Context: ctx}, blk.NumberU64(), uint32(latestL2Block.GasUsed()))
+		bf, _, err := srv.taikoL2.GetBasefee(&bind.CallOpts{Context: ctx}, blk.NumberU64(), uint32(latestL2Block.GasUsed()))
 		if err != nil {
 			return nil, err
 		}
 
-		baseFee = bf.Basefee
+		baseFee = bf
 	} else {
 		cfg := params.NetworkIDToChainConfigOrDefault(chainID)
 		baseFee = eip1559.CalcBaseFee(cfg, blk.Header())

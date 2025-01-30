@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d "../protocol/out" ]; then
-    echo "ABI not generated in protocol package yet. Please run npm install && pnpm run compile in ../protocol"
+    echo "ABI not generated in protocol package yet. Please run npm install && pnpm compile in ../protocol"
     exit 1
 fi
 

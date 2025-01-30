@@ -658,12 +658,12 @@ func (p *Processor) getBaseFee(ctx context.Context) (*big.Int, error) {
 			return nil, err
 		}
 
-		bf, err := p.taikoL2.GetBasefee(&bind.CallOpts{Context: ctx}, blk.NumberU64(), uint32(latestL2Block.GasUsed()))
+		bf, _, err := p.taikoL2.GetBasefee(&bind.CallOpts{Context: ctx}, blk.NumberU64(), uint32(latestL2Block.GasUsed()))
 		if err != nil {
 			return nil, err
 		}
 
-		baseFee = bf.Basefee
+		baseFee = bf
 	} else {
 		cfg := params.NetworkIDToChainConfigOrDefault(p.destChainId)
 		baseFee = eip1559.CalcBaseFee(cfg, blk.Header())
