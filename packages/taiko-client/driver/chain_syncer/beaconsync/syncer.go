@@ -72,10 +72,15 @@ func (s *Syncer) TriggerBeaconSync(blockID uint64) error {
 		return fmt.Errorf("unexpected NewPayload response status: %s", status.Status)
 	}
 
+	lastVerifiedBlockHash, err := s.rpc.GetLastVerifiedBlockHash(s.ctx)
+	if err != nil {
+		return fmt.Errorf("failed to fetch the last verified block hash: %w", err)
+	}
+
 	fcRes, err := s.rpc.L2Engine.ForkchoiceUpdate(s.ctx, &engine.ForkchoiceStateV1{
 		HeadBlockHash:      headPayload.BlockHash,
-		SafeBlockHash:      headPayload.BlockHash,
-		FinalizedBlockHash: headPayload.BlockHash,
+		SafeBlockHash:      lastVerifiedBlockHash,
+		FinalizedBlockHash: lastVerifiedBlockHash,
 	}, nil)
 	if err != nil {
 		return err

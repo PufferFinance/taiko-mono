@@ -409,12 +409,17 @@ func (s *Syncer) insertNewHead(
 		return nil, fmt.Errorf("failed to create execution payloads: %w", err)
 	}
 
-	fc := &engine.ForkchoiceStateV1{
-		HeadBlockHash:      payload.BlockHash,
-		SafeBlockHash:      payload.BlockHash,
-		FinalizedBlockHash: payload.BlockHash,
+	lastVerifiedBlockHash, err := s.rpc.GetLastVerifiedBlockHash(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch the last verified block hash: %w", err)
 	}
 
+	fc := &engine.ForkchoiceStateV1{
+		HeadBlockHash:      payload.BlockHash,
+		SafeBlockHash:      lastVerifiedBlockHash,
+		FinalizedBlockHash: lastVerifiedBlockHash,
+	}
+	
 	// Update the fork choice
 	fcRes, err := s.rpc.L2Engine.ForkchoiceUpdate(ctx, fc, nil)
 	if err != nil {
