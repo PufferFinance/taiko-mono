@@ -114,20 +114,20 @@ func (s *L2ChainSyncer) Sync() error {
 		// Get the execution engine's chain head.
 		l2Head, err := s.rpc.L2.HeaderByNumber(s.ctx, nil)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to get L2 chain head: %w", err)
 		}
 
 		log.Info(
 			"L2 head information",
 			"number", l2Head.Number,
 			"hash", l2Head.Hash(),
-			"lastSyncedVerifiedBlockID", s.progressTracker.LastSyncedBlockID(),
-			"lastSyncedVerifiedBlockHash", s.progressTracker.LastSyncedBlockHash(),
+			"lastSyncedBlockID", s.progressTracker.LastSyncedBlockID(),
+			"lastSyncedBlockHash", s.progressTracker.LastSyncedBlockHash(),
 		)
 
 		// Reset the L1Current cursor.
 		if err := s.state.ResetL1Current(s.ctx, l2Head.Number); err != nil {
-			return err
+			return fmt.Errorf("failed to reset L1 current cursor: %w", err)
 		}
 
 		// Reset to the latest L2 execution engine's chain status.
@@ -140,7 +140,7 @@ func (s *L2ChainSyncer) Sync() error {
 
 // AheadOfHeadToSync checks whether the L2 chain is ahead of the head to sync in protocol.
 func (s *L2ChainSyncer) AheadOfHeadToSync(heightToSync uint64) bool {
-	log.Debug(
+	log.Info(
 		"Checking whether the execution engine is ahead of the head to sync",
 		"heightToSync", heightToSync,
 		"executionEngineHead", s.state.GetL2Head().Number,
@@ -156,12 +156,23 @@ func (s *L2ChainSyncer) AheadOfHeadToSync(heightToSync uint64) bool {
 	// If the L2 execution engine's chain is behind of the block head to sync,
 	// we should keep the beacon sync.
 	if s.state.GetL2Head().Number.Uint64() < heightToSync {
+		log.Info(
+			"L2 execution engine is behind of the head to sync",
+			"heightToSync", heightToSync,
+			"executionEngineHead", s.state.GetL2Head().Number,
+		)
 		return false
 	}
 
 	// If the L2 execution engine's chain is ahead of the block head to sync,
 	// we can mark the beacon sync progress as finished.
 	if s.progressTracker.LastSyncedBlockID() != nil {
+		log.Info(
+			"L2 execution engine is ahead of the head to sync",
+			"heightToSync", heightToSync,
+			"executionEngineHead", s.state.GetL2Head().Number,
+			"lastSyncedBlockID", s.progressTracker.LastSyncedBlockID(),
+		)
 		return s.state.GetL2Head().Number.Uint64() >= s.progressTracker.LastSyncedBlockID().Uint64()
 	}
 
@@ -182,15 +193,14 @@ func (s *L2ChainSyncer) needNewBeaconSyncTriggered() (uint64, bool, error) {
 
 	// For full sync mode, we will use the verified block head,
 	// and for snap sync mode, we will use the latest block head.
-	var (
-		blockID uint64
-		err     error
-	)
+	var blockID uint64
 	switch s.syncMode {
 	case downloader.SnapSync.String():
-		if blockID, err = s.rpc.L2CheckPoint.BlockNumber(s.ctx); err != nil {
+		headL1Origin, err := s.rpc.L2CheckPoint.HeadL1Origin(s.ctx)
+		if err != nil {
 			return 0, false, err
 		}
+		blockID = headL1Origin.BlockID.Uint64()
 	case downloader.FullSync.String():
 		stateVars, err := s.rpc.GetProtocolStateVariables(&bind.CallOpts{Context: s.ctx})
 		if err != nil {

@@ -114,7 +114,7 @@ func (c *Client) WaitTillL2ExecutionEngineSynced(ctx context.Context) error {
 				return err
 			}
 
-			if progress.isSyncing() {
+			if progress.IsSyncing() {
 				log.Info(
 					"L2 execution engine is syncing",
 					"currentBlockID", progress.CurrentBlockID,
@@ -369,23 +369,50 @@ func (c *Client) GetPoolContent(
 	ctxWithTimeout, cancel := CtxWithTimeoutOrDefault(ctx, defaultTimeout)
 	defer cancel()
 
-	l1Head, err := c.L1.HeaderByNumber(ctx, nil)
+	// Get the latest L2 block header at first.
+	l2Head, err := c.L2.HeaderByNumber(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	l2Head, err := c.L2.HeaderByNumber(ctx, nil)
+	l1Origin, err := c.L2.L1OriginByID(ctx, l2Head.Number)
+	if err != nil && err.Error() != ethereum.NotFound.Error() {
+		return nil, err
+	}
+
+	var (
+		L1HeadNum *big.Int
+		L2HeadNum *big.Int
+		timestamp = uint64(time.Now().Unix())
+	)
+
+	if l1Origin != nil && l1Origin.IsSoftBlock() && !l1Origin.EndOfPreconf && !l1Origin.EndOfBlock {
+		// Check if this is an unfinished soft block, if not, we will use the latest L1 / L2 block number from the L1Origin.
+		// Otherwise, we will use the L1 / L2 block number in L1Origin.
+		L1HeadNum = l1Origin.L1BlockHeight
+		L2HeadNum = new(big.Int).Sub(l1Origin.BlockID, common.Big1)
+	}
+
+	l1Head, err := c.L1.HeaderByNumber(ctx, L1HeadNum)
 	if err != nil {
 		return nil, err
+	}
+
+	if L2HeadNum != nil {
+		timestamp = l2Head.Time
+		l2Head, err = c.L2.HeaderByNumber(ctx, L2HeadNum)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	baseFee, err := c.CalculateBaseFee(
 		ctx,
 		l2Head,
 		l1Head.Number,
-		chainConfig.IsOntake(new(big.Int).Add(l2Head.Number, common.Big1)),
+		true,
 		&chainConfig.ProtocolConfigs.BaseFeeConfig,
-		uint64(time.Now().Unix()),
+		timestamp,
 	)
 	if err != nil {
 		return nil, err
@@ -430,8 +457,8 @@ type L2SyncProgress struct {
 	HighestBlockID *big.Int
 }
 
-// isSyncing returns true if the L2 execution engine is syncing with L1.
-func (p *L2SyncProgress) isSyncing() bool {
+// IsSyncing returns true if the L2 execution engine is syncing with L1.
+func (p *L2SyncProgress) IsSyncing() bool {
 	if p.SyncProgress == nil {
 		return false
 	}
@@ -508,6 +535,19 @@ func (c *Client) GetProtocolStateVariables(opts *bind.CallOpts) (*struct {
 	opts.Context = ctxWithTimeout
 
 	return GetProtocolStateVariables(c.TaikoL1, opts)
+}
+
+// GetLastVerifiedBlock gets the last verified block from TaikoL1 contract.
+func (c *Client) GetLastVerifiedBlock(ctx context.Context) (struct {
+	BlockId    uint64 //nolint:stylecheck
+	BlockHash  [32]byte
+	StateRoot  [32]byte
+	VerifiedAt uint64
+}, error) {
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+
+	return c.TaikoL1.GetLastVerifiedBlock(&bind.CallOpts{Context: ctxWithTimeout})
 }
 
 // GetL2BlockInfo fetches the L2 block information from the protocol.
@@ -669,10 +709,12 @@ func (c *Client) checkSyncedL1SnippetFromAnchor(
 	log.Info("Check synced L1 snippet from anchor", "blockID", blockID, "l1Height", l1Height)
 	block, err := c.L2.BlockByNumber(ctx, blockID)
 	if err != nil {
+		log.Error("Failed to fetch L2 block", "blockID", blockID, "error", err)
 		return false, err
 	}
 	parent, err := c.L2.BlockByHash(ctx, block.ParentHash())
 	if err != nil {
+		log.Error("Failed to fetch L2 parent block", "blockID", blockID, "parentHash", block.ParentHash(), "error", err)
 		return false, err
 	}
 
@@ -680,6 +722,7 @@ func (c *Client) checkSyncedL1SnippetFromAnchor(
 		block.Transactions()[0],
 	)
 	if err != nil {
+		log.Error("Failed to parse L1 snippet from anchor transaction", "blockID", blockID, "error", err)
 		return false, err
 	}
 
@@ -722,7 +765,7 @@ func (c *Client) getSyncedL1SnippetFromAnchor(
 ) {
 	method, err := encoding.TaikoL2ABI.MethodById(tx.Data())
 	if err != nil {
-		return common.Hash{}, 0, 0, err
+		return common.Hash{}, 0, 0, fmt.Errorf("failed to get TaikoL2.Anchor method by ID: %w", err)
 	}
 
 	var ok bool
@@ -759,7 +802,7 @@ func (c *Client) getSyncedL1SnippetFromAnchor(
 		args := map[string]interface{}{}
 
 		if err := method.Inputs.UnpackIntoMap(args, tx.Data()[4:]); err != nil {
-			return common.Hash{}, 0, 0, err
+			return common.Hash{}, 0, 0, fmt.Errorf("failed to unpack anchor transaction calldata: %w", err)
 		}
 
 		l1Height, ok = args["_anchorBlockId"].(uint64)
