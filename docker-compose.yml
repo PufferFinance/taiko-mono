@@ -42,6 +42,9 @@ services:
   prover:
     image: unifi-client
     container_name: unifi-client-prover
+    build:
+      context: .
+      dockerfile: ./packages/taiko-client/Dockerfile
     restart: unless-stopped
     pull_policy: always
     command:
